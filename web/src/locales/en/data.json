@@ -573,7 +573,8 @@
     "Log in with type": "Log in with {type}",
     "Log in to Zhuge Shenma": "Log in to Zhuge Shenma",
     "bind with type": "Bind with {type}",
-    "bind with Phone": "Bind with phone number"
+    "bind with Phone": "Bind with phone number",
+    "bind tips": "If this account has previously registered with Zhuge Shenma, it will be merged after binding. Records from the original account will no longer be retained."
   },
   "mfa": {
     "Each time you sign in to your Account, you'll need your password and a authentication code": "Each time you sign in to your Account, you'll need your password and a authentication code",

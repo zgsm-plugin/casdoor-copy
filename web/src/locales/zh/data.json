@@ -573,7 +573,8 @@
     "Log in with type": "通过 {type} 登录",
     "Log in to Zhuge Shenma": "登录诸葛神码",
     "bind with type": "通过 {type} 绑定",
-    "bind with Phone": "通过手机号绑定"
+    "bind with Phone": "通过手机号绑定",
+    "bind tips": "若该账户之前已注册诸葛神码，账号绑定后会做合并处理，原账号的记录将不再被保留。"
   },
   "mfa": {
     "Each time you sign in to your Account, you'll need your password and a authentication code": "每次登录帐户时，都需要密码和认证码",

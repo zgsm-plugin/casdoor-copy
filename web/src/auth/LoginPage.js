@@ -1400,6 +1400,21 @@ class LoginPage extends React.Component {
                 {
                   this.renderLoginPanel(application)
                 }
+                {
+                  this.state.bindType && (<div style={{
+                    maxWidth: "350px",
+                    textAlign: "left",
+                    display: "flex",
+                    alignItems: "start",
+                    fontSize: "12px",
+                    ...this.state.bindType === "sms"
+                      ? {marginTop: "12px"}
+                      : {marginTop: "-12px"},
+                  }}>
+                    <span style={{color: "#E64545", marginRight: "2px"}}>*</span>
+                    <div>{i18next.t("login:bind tips")}</div>
+                  </div>)
+                }
               </div>
             </div>
           </div>
