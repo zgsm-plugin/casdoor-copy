@@ -105,6 +105,10 @@ function getSigninButton(provider) {
   }
 }
 
+function getAuthUrl(application, provider) {
+  return Provider.getAuthUrl(application, provider, "signup");
+}
+
 function goToSamlUrl(provider, location) {
   const params = new URLSearchParams(location.search);
   const clientId = params.get("client_id") ?? "";
@@ -143,7 +147,7 @@ export function goToWeb3Url(application, provider, method) {
   }
 }
 
-export function renderProviderLogo(provider, application, width, margin, size, location) {
+export function renderProviderLogo(provider, application, width, margin, size, location, bindType) {
   if (size === "small") {
     if (provider.category === "OAuth") {
       if (provider.type === "WeChat" && provider.clientId2 !== "" && provider.clientSecret2 !== "" && provider.disableSsl === true && !navigator.userAgent.includes("MicroMessenger")) {
@@ -156,9 +160,31 @@ export function renderProviderLogo(provider, application, width, margin, size, l
         );
       } else {
         return (
-          <a key={provider.displayName} href={Provider.getAuthUrl(application, provider, "signup")}>
-            <img width={width} height={width} src={getProviderLogoURL(provider)} alt={provider.displayName} className="provider-img" style={{margin: margin}} />
-          </a>
+          <div style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            borderWidth: "1px",
+            borderStyle: "solid",
+            borderColor: "#d9d9d9",
+            borderRadius: "2px",
+            cursor: "pointer",
+          }}
+          onClick={() => window.location.href = getAuthUrl(application, provider, "signup")}
+          >
+            <a key={provider.displayName} href={getAuthUrl(application, provider, "signup")}>
+              <img width={width} height={width} src={getProviderLogoURL(provider)} alt={provider.displayName} className="provider-img" style={{margin: margin}} />
+            </a>
+            <span style={{
+              marginLeft: "6px",
+              fontSize: "16px",
+              fontWeight: 600,
+            }}>
+              {bindType
+                ? i18next.t("login:bind with type").replace("{type}", provider.name)
+                : i18next.t("login:Log in with type").replace("{type}", provider.name)}
+            </span>
+          </div>
         );
       }
     } else if (provider.category === "SAML") {

@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 
 	"github.com/casdoor/casdoor/util"
 	"github.com/mitchellh/mapstructure"
@@ -73,14 +74,28 @@ type CustomUserInfo struct {
 }
 
 func (idp *CustomIdProvider) GetUserInfo(token *oauth2.Token) (*UserInfo, error) {
-	accessToken := token.AccessToken
-	request, err := http.NewRequest("GET", idp.UserInfoURL, nil)
+	data := fmt.Sprintf("access_token=%s", token.AccessToken)
+	request, err := http.NewRequest("POST", idp.UserInfoURL, strings.NewReader(data))
 	if err != nil {
 		return nil, err
 	}
 
-	// add accessToken to request header
-	request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", accessToken))
+	request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	userInfo, err := idp.executeUserInfoRequest(request)
+	if err == nil {
+		return userInfo, nil
+	}
+
+	return nil, fmt.Errorf("get UserInfo failed，error: %v", err)
+}
+
+func (idp *CustomIdProvider) executeUserInfoRequest(request *http.Request) (*UserInfo, error) {
+	if request.Body != nil {
+		bodyBytes, _ := io.ReadAll(request.Body)
+		request.Body = io.NopCloser(strings.NewReader(string(bodyBytes)))
+	}
+
 	resp, err := idp.Client.Do(request)
 	if err != nil {
 		return nil, err
@@ -98,6 +113,17 @@ func (idp *CustomIdProvider) GetUserInfo(token *oauth2.Token) (*UserInfo, error)
 		return nil, err
 	}
 
+	if errcode, exists := dataMap["errcode"]; exists {
+		if errmsg, exists := dataMap["errmsg"]; exists {
+			return nil, fmt.Errorf("call external API error: errcode=%v, errmsg=%v", errcode, errmsg)
+		}
+		return nil, fmt.Errorf("call external API error: errcode=%v", errcode)
+	}
+
+	return idp.processUserInfoResponse(dataMap)
+}
+
+func (idp *CustomIdProvider) processUserInfoResponse(dataMap map[string]interface{}) (*UserInfo, error) {
 	requiredFields := []string{"id", "username", "displayName"}
 	for _, field := range requiredFields {
 		_, ok := idp.UserMapping[field]
@@ -108,11 +134,11 @@ func (idp *CustomIdProvider) GetUserInfo(token *oauth2.Token) (*UserInfo, error)
 
 	// map user info
 	for k, v := range idp.UserMapping {
-		_, ok := dataMap[v]
-		if !ok {
-			return nil, fmt.Errorf("cannot find %s in user from custom provider", v)
+		if v == "" {
+			dataMap[k] = ""
+		} else {
+			dataMap[k] = dataMap[v]
 		}
-		dataMap[k] = dataMap[v]
 	}
 
 	// try to parse id to string
