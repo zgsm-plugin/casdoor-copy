@@ -811,10 +811,11 @@ func GetUserByFieldWithUnifiedIdentity(organizationName string, field string, va
 		if err != nil {
 			return nil, err
 		}
-		// Ensure user belongs to the correct organization
-		if user.Owner == organizationName {
-			return user, nil
-		}
+
+		// identity(authType and authValue) is unique, so there's no need to verify the organization
+		// if user.Owner == organizationName {
+		// 	return user, nil
+		// }
 	}
 
 	// If unified identity binding not found, fallback to old method
