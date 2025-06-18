@@ -795,3 +795,28 @@ func StringArrayToUser(stringArray [][]string) ([]*User, error) {
 
 	return users, nil
 }
+
+// GetUserByFieldWithUnifiedIdentity - Find user by field (prioritize unified identity binding)
+func GetUserByFieldWithUnifiedIdentity(organizationName string, field string, value string) (*User, error) {
+	// First try to find through unified identity binding
+	// Convert field to lowercase to match stored authType format
+	binding, err := GetUserIdentityBindingByAuth(strings.ToLower(field), value)
+	if err != nil {
+		return nil, err
+	}
+
+	if binding != nil {
+		// Found user through unified identity binding
+		user, err := getUserByUniversalId(binding.UniversalId)
+		if err != nil {
+			return nil, err
+		}
+		// Ensure user belongs to the correct organization
+		if user.Owner == organizationName {
+			return user, nil
+		}
+	}
+
+	// If unified identity binding not found, fallback to old method
+	return GetUserByField(organizationName, field, value)
+}

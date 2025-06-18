@@ -31,8 +31,11 @@ type Claims struct {
 	Tag       string `json:"tag"`
 	Scope     string `json:"scope,omitempty"`
 	// the `azp` (Authorized Party) claim. Optional. See https://openid.net/specs/openid-connect-core-1_0.html#IDToken
-	Azp      string `json:"azp,omitempty"`
-	Provider string `json:"provider,omitempty"`
+	Azp           string `json:"azp,omitempty"`
+	Provider      string `json:"provider,omitempty"`
+	UniversalId   string `json:"universal_id,omitempty"`   // Unified user UUID
+	PhoneNumber   string `json:"phone_number,omitempty"`   // User phone number
+	GithubAccount string `json:"github_account,omitempty"` // User GitHub account
 	jwt.RegisteredClaims
 }
 
@@ -167,12 +170,15 @@ type OIDCAddress struct {
 
 type ClaimsWithoutThirdIdp struct {
 	*UserWithoutThirdIdp
-	TokenType string `json:"tokenType,omitempty"`
-	Nonce     string `json:"nonce,omitempty"`
-	Tag       string `json:"tag"`
-	Scope     string `json:"scope,omitempty"`
-	Azp       string `json:"azp,omitempty"`
-	Provider  string `json:"provider,omitempty"`
+	TokenType     string `json:"tokenType,omitempty"`
+	Nonce         string `json:"nonce,omitempty"`
+	Tag           string `json:"tag"`
+	Scope         string `json:"scope,omitempty"`
+	Azp           string `json:"azp,omitempty"`
+	Provider      string `json:"provider,omitempty"`
+	UniversalId   string `json:"universal_id,omitempty"`   // Unified user UUID
+	PhoneNumber   string `json:"phone_number,omitempty"`   // User phone number
+	GithubAccount string `json:"github_account,omitempty"` // User GitHub account
 	jwt.RegisteredClaims
 }
 
@@ -317,6 +323,9 @@ func getClaimsWithoutThirdIdp(claims Claims) ClaimsWithoutThirdIdp {
 		RegisteredClaims:    claims.RegisteredClaims,
 		Azp:                 claims.Azp,
 		Provider:            claims.Provider,
+		UniversalId:         claims.UniversalId,
+		PhoneNumber:         claims.PhoneNumber,
+		GithubAccount:       claims.GithubAccount,
 	}
 	return res
 }
@@ -339,6 +348,9 @@ func getClaimsCustom(claims Claims, tokenField []string) jwt.MapClaims {
 	res["scope"] = claims.Scope
 	res["azp"] = claims.Azp
 	res["provider"] = claims.Provider
+	res["universal_id"] = claims.UniversalId
+	res["phone_number"] = claims.PhoneNumber
+	res["github_account"] = claims.GithubAccount
 
 	for _, field := range tokenField {
 		userField := userValue.FieldByName(field)
@@ -388,18 +400,27 @@ func generateJwtToken(application *Application, user *User, provider string, non
 	name := util.GenerateId()
 	jti := util.GetId(application.Owner, name)
 
+	// Get user's authentication information (phone number and GitHub account)
+	phoneNumber, githubAccount, err := getUserAuthInfo(user.UniversalId)
+	if err != nil {
+		return "", "", "", err
+	}
+
 	claims := Claims{
 		User:      user,
 		TokenType: "access-token",
 		Nonce:     nonce,
 		// FIXME: A workaround for custom claim by reusing `tag` in user info
-		Tag:      user.Tag,
-		Scope:    scope,
-		Azp:      application.ClientId,
-		Provider: provider,
+		Tag:           user.Tag,
+		Scope:         scope,
+		Azp:           application.ClientId,
+		Provider:      provider,
+		UniversalId:   user.UniversalId,
+		PhoneNumber:   phoneNumber,
+		GithubAccount: githubAccount,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    originBackend,
-			Subject:   user.Id,
+			Subject:   user.UniversalId, // Use unified UUID as subject
 			Audience:  []string{application.ClientId},
 			ExpiresAt: jwt.NewNumericDate(expireTime),
 			NotBefore: jwt.NewNumericDate(nowTime),

@@ -103,6 +103,10 @@ p, *, *, GET, /api/run-casbin-command, *, *
 p, *, *, POST, /api/refresh-engines, *, *
 p, *, *, GET, /api/get-invitation-info, *, *
 p, *, *, GET, /api/faceid-signin-begin, *, *
+p, *, *, POST, /api/identity/merge, *, *
+p, *, *, GET, /api/identity/info, *, *
+p, *, *, POST, /api/identity/bind, *, *
+p, *, *, POST, /api/identity/unbind, *, *
 `
 
 		sa := stringadapter.NewAdapter(ruleText)

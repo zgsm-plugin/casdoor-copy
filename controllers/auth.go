@@ -743,7 +743,7 @@ func (c *ApiController) Login() {
 					return
 				}
 			} else if provider.Category == "OAuth" || provider.Category == "Web3" {
-				user, err = object.GetUserByField(application.Organization, provider.Type, userInfo.Id)
+				user, err = object.GetUserByFieldWithUnifiedIdentity(application.Organization, provider.Type, userInfo.Id)
 				if err != nil {
 					c.ResponseError(err.Error())
 					return
@@ -770,8 +770,8 @@ func (c *ApiController) Login() {
 				// Sign up via OAuth
 				if application.EnableLinkWithEmail {
 					if userInfo.Email != "" {
-						// Find existing user with Email
-						user, err = object.GetUserByField(application.Organization, "email", userInfo.Email)
+						// Find existing user with Email using unified identity binding
+						user, err = object.GetUserByFieldWithUnifiedIdentity(application.Organization, "email", userInfo.Email)
 						if err != nil {
 							c.ResponseError(err.Error())
 							return
@@ -779,8 +779,8 @@ func (c *ApiController) Login() {
 					}
 
 					if user == nil && userInfo.Phone != "" {
-						// Find existing user with phone number
-						user, err = object.GetUserByField(application.Organization, "phone", userInfo.Phone)
+						// Find existing user with phone number using unified identity binding
+						user, err = object.GetUserByFieldWithUnifiedIdentity(application.Organization, "phone", userInfo.Phone)
 						if err != nil {
 							c.ResponseError(err.Error())
 							return
@@ -867,7 +867,17 @@ func (c *ApiController) Login() {
 					}
 
 					var affected bool
-					affected, err = object.AddUser(user, c.GetAcceptLanguage())
+					// To solve the problem that identity binding cannot be created due to insufficient GitHub API permissions
+					// Set OAuth properties first, then create the user
+					if userInfo.Id != "" {
+						// Pre-set OAuth ID to Properties
+						if user.Properties == nil {
+							user.Properties = make(map[string]string)
+						}
+						user.Properties[fmt.Sprintf("oauth_%s_id", provider.Type)] = userInfo.Id
+					}
+
+					affected, err = object.AddUser(user, c.GetAcceptLanguage(), provider.Type)
 					if err != nil {
 						c.ResponseError(err.Error())
 						return
@@ -918,7 +928,7 @@ func (c *ApiController) Login() {
 			}
 
 			var oldUser *object.User
-			oldUser, err = object.GetUserByField(application.Organization, provider.Type, userInfo.Id)
+			oldUser, err = object.GetUserByFieldWithUnifiedIdentity(application.Organization, provider.Type, userInfo.Id)
 			if err != nil {
 				c.ResponseError(err.Error())
 				return

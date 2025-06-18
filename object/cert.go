@@ -253,7 +253,7 @@ func (p *Cert) populateContent() error {
 }
 
 func getCertByApplication(application *Application) (*Cert, error) {
-	if application.Cert != "" {
+	if application != nil && application.Cert != "" {
 		return getCertByName(application.Cert)
 	} else {
 		return GetDefaultCert()

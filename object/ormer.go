@@ -427,4 +427,10 @@ func (a *Ormer) createTable() {
 	if err != nil {
 		panic(err)
 	}
+
+	// Tables related to unified identity
+	err = a.Engine.Sync2(new(UserIdentityBinding))
+	if err != nil {
+		panic(err)
+	}
 }

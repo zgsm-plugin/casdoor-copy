@@ -60,6 +60,7 @@ type User struct {
 
 	Id                string   `xorm:"varchar(100) index" json:"id"`
 	ExternalId        string   `xorm:"varchar(100) index" json:"externalId"`
+	UniversalId       string   `xorm:"varchar(100) index" json:"universalId"`
 	Type              string   `xorm:"varchar(100)" json:"type"`
 	Password          string   `xorm:"varchar(150)" json:"password"`
 	PasswordSalt      string   `xorm:"varchar(100)" json:"passwordSalt"`
@@ -819,7 +820,11 @@ func UpdateUserForAllFields(id string, user *User) (bool, error) {
 	return affected != 0, nil
 }
 
-func AddUser(user *User, lang string) (bool, error) {
+func AddUser(user *User, lang string, primaryProvider string) (bool, error) {
+	if primaryProvider == "" {
+		return false, fmt.Errorf(i18n.Translate(lang, "user:primary provider is required"))
+	}
+
 	if user.Id == "" {
 		application, err := GetApplicationByUser(user)
 		if err != nil {
@@ -834,6 +839,11 @@ func AddUser(user *User, lang string) (bool, error) {
 		user.Id = id
 	}
 
+	// Generate unified identity UUID
+	if user.UniversalId == "" {
+		user.UniversalId = util.GenerateId()
+	}
+
 	if user.Owner == "" || user.Name == "" {
 		return false, fmt.Errorf(i18n.Translate(lang, "user:the user's owner and name should not be empty"))
 	}
@@ -846,6 +856,7 @@ func AddUser(user *User, lang string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
+
 	if organization == nil {
 		return false, fmt.Errorf(i18n.Translate(lang, "auth:the organization: %s is not found"), user.Owner)
 	}
@@ -876,6 +887,10 @@ func AddUser(user *User, lang string) (bool, error) {
 		user.CreatedTime = util.GetCurrentTime()
 	}
 
+	if user.UpdatedTime == "" {
+		user.UpdatedTime = util.GetCurrentTime()
+	}
+
 	err = user.UpdateUserHash()
 	if err != nil {
 		return false, err
@@ -886,6 +901,7 @@ func AddUser(user *User, lang string) (bool, error) {
 	updated, err := user.refreshAvatar()
 	if err != nil {
 		return false, err
+
 	}
 
 	if updated && user.PermanentAvatar != "*" {
@@ -916,8 +932,30 @@ func AddUser(user *User, lang string) (bool, error) {
 		user.Name = strings.ToLower(user.Name)
 	}
 
-	affected, err := ormer.Engine.Insert(user)
+	// Start transaction processing
+	session := ormer.Engine.NewSession()
+	defer session.Close()
+
+	if err := session.Begin(); err != nil {
+		return false, err
+	}
+
+	// Insert user record
+	affected, err := session.Insert(user)
 	if err != nil {
+		session.Rollback()
+		return false, err
+	}
+
+	// Create authentication method binding records, passing primary login method information
+	err = createIdentityBindings(session, user, user.UniversalId, primaryProvider)
+	if err != nil {
+		session.Rollback()
+		return false, err
+	}
+
+	// Commit transaction
+	if err := session.Commit(); err != nil {
 		return false, err
 	}
 
@@ -1081,7 +1119,28 @@ func GetUserInfo(user *User, scope string, aud string, host string) (*Userinfo, 
 }
 
 func LinkUserAccount(user *User, field string, value string) (bool, error) {
-	return SetUserField(user, field, value)
+	// First set user field
+	affected, err := SetUserField(user, field, value)
+	if err != nil {
+		return false, err
+	}
+
+	// If it's a clear operation (value is empty), delete the corresponding identity binding
+	if value == "" {
+		err = RemoveUserIdentityBindingForUser(user.UniversalId, strings.ToLower(field))
+		if err != nil {
+			return false, err
+		}
+		return affected, nil
+	}
+
+	// Create or update unified identity binding record
+	_, err = AddUserIdentityBindingForUser(user.UniversalId, strings.ToLower(field), value)
+	if err != nil {
+		return false, err
+	}
+
+	return affected, nil
 }
 
 func (user *User) GetId() string {
