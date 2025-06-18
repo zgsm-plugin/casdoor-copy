@@ -520,7 +520,7 @@ func (c *ApiController) VerifyCode() {
 
 	var user *object.User
 	if authForm.Name != "" {
-		user, err = object.GetUserByFields(authForm.Organization, authForm.Name)
+		user, err = object.GetUserByFieldsWithUnifiedIdentity(authForm.Organization, authForm.Name)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
@@ -539,7 +539,7 @@ func (c *ApiController) VerifyCode() {
 		}
 	}
 
-	if user, err = object.GetUserByFields(authForm.Organization, authForm.Username); err != nil {
+	if user, err = object.GetUserByFieldsWithUnifiedIdentity(authForm.Organization, authForm.Username); err != nil {
 		c.ResponseError(err.Error())
 		return
 	} else if user == nil {

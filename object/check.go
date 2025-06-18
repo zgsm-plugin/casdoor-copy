@@ -339,7 +339,7 @@ func CheckUserPassword(organization string, username string, password string, la
 		isSigninViaLdap = options[1]
 		isPasswordWithLdapEnabled = options[2]
 	}
-	user, err := GetUserByFields(organization, username)
+	user, err := GetUserByFieldsWithUnifiedIdentity(organization, username)
 	if err != nil {
 		return nil, err
 	}

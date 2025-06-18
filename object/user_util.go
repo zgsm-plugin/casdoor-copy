@@ -820,3 +820,47 @@ func GetUserByFieldWithUnifiedIdentity(organizationName string, field string, va
 	// If unified identity binding not found, fallback to old method
 	return GetUserByField(organizationName, field, value)
 }
+
+// GetUserByFieldsWithUnifiedIdentity - Find user by multiple fields (prioritize unified identity binding)
+func GetUserByFieldsWithUnifiedIdentity(organization string, field string) (*User, error) {
+	isUsernameLowered := conf.GetConfigBool("isUsernameLowered")
+	if isUsernameLowered {
+		field = strings.ToLower(field)
+	}
+
+	field = strings.TrimSpace(field)
+
+	// check username - use original method as username is not handled by unified identity
+	user, err := GetUserByField(organization, "name", field)
+	if err != nil || user != nil {
+		return user, err
+	}
+
+	// check email - use unified identity binding first
+	if strings.Contains(field, "@") {
+		user, err = GetUserByFieldWithUnifiedIdentity(organization, "email", field)
+		if user != nil || err != nil {
+			return user, err
+		}
+	}
+
+	// check phone - use unified identity binding first
+	user, err = GetUserByFieldWithUnifiedIdentity(organization, "phone", field)
+	if user != nil || err != nil {
+		return user, err
+	}
+
+	// check user ID - use original method as ID is not handled by unified identity
+	user, err = GetUserByField(organization, "id", field)
+	if user != nil || err != nil {
+		return user, err
+	}
+
+	// check ID card - use original method as ID card is not handled by unified identity
+	user, err = GetUserByField(organization, "id_card", field)
+	if user != nil || err != nil {
+		return user, err
+	}
+
+	return nil, nil
+}

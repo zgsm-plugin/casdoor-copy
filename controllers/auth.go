@@ -419,7 +419,7 @@ func (c *ApiController) Login() {
 
 		var user *object.User
 		if authForm.SigninMethod == "Face ID" {
-			if user, err = object.GetUserByFields(authForm.Organization, authForm.Username); err != nil {
+			if user, err = object.GetUserByFieldsWithUnifiedIdentity(authForm.Organization, authForm.Username); err != nil {
 				c.ResponseError(err.Error(), nil)
 				return
 			} else if user == nil {
@@ -466,7 +466,7 @@ func (c *ApiController) Login() {
 				}
 			}
 		} else if authForm.Password == "" {
-			if user, err = object.GetUserByFields(authForm.Organization, authForm.Username); err != nil {
+			if user, err = object.GetUserByFieldsWithUnifiedIdentity(authForm.Organization, authForm.Username); err != nil {
 				c.ResponseError(err.Error(), nil)
 				return
 			} else if user == nil {
