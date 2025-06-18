@@ -642,7 +642,7 @@ class LoginPage extends React.Component {
       )
       ;
     } else if (signinItem.name === "Username") {
-      if (this.state.loginMethod === "webAuthn" || this.state.bindType === "github") {
+      if (this.state.loginMethod === "webAuthn" || this.state.bindType === "github" || this.getHasIdtrustProviderItems()) {
         return null;
       }
       return (
@@ -751,7 +751,7 @@ class LoginPage extends React.Component {
     } else if (signinItem.name === "Agreement") {
       return AgreementModal.isAgreementRequired(application) ? AgreementModal.renderAgreementFormItem(application, true, {}, this) : null;
     } else if (signinItem.name === "Login button") {
-      if (this.state.bindType === "github") {
+      if (this.state.bindType === "github" || this.getHasIdtrustProviderItems()) {
         return null;
       }
 
@@ -825,7 +825,7 @@ class LoginPage extends React.Component {
                 return (
                   <>
                     {
-                      this.state.bindType !== "github" && (
+                      (this.state.bindType !== "github" && !this.getHasIdtrustProviderItems()) && (
                         <Divider style={{fontSize: "14px", margin: "32px 0"}}>{i18next.t("login:Other login methods")}</Divider>
                       )
                     }
@@ -990,6 +990,18 @@ class LoginPage extends React.Component {
 
       return providerItem.provider.category === "Captcha";
     });
+  }
+
+  getHasIdtrustProviderItems() {
+    const providers = this.props.application?.providers;
+    if (!Array.isArray(providers)) {
+      return false;
+    }
+
+    return !!providers.filter(item =>
+      item?.provider?.name?.toLowerCase() === "idtrust"
+        && item?.provider?.type === "Custom"
+    ).length;
   }
 
   renderCaptchaModal(application) {
@@ -1179,7 +1191,7 @@ class LoginPage extends React.Component {
           </div>
         </Col>
       );
-    } else if (this.state.bindType === "github") {
+    } else if (this.state.bindType === "github" || this.getHasIdtrustProviderItems()) {
       return null;
     } else if (this.state.loginMethod?.includes("verificationCode")) {
       return (

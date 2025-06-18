@@ -45,6 +45,7 @@ import LoginButton from "./LoginButton";
 import * as AuthBackend from "./AuthBackend";
 import {WechatOfficialAccountModal} from "./Util";
 import * as Setting from "../Setting";
+import IdtrustImg from "../static/idtrust.png";
 
 function getSigninButton(provider) {
   const text = i18next.t("login:Sign in with {type}").replace("{type}", provider.displayName !== "" ? provider.displayName : provider.type);
@@ -147,6 +148,11 @@ export function goToWeb3Url(application, provider, method) {
   }
 }
 
+function getHasIdtrustProviderItems(provider) {
+  return !!(provider?.name?.toLowerCase() === "idtrust"
+    && provider?.type === "Custom");
+}
+
 export function renderProviderLogo(provider, application, width, margin, size, location, bindType) {
   if (size === "small") {
     if (provider.category === "OAuth") {
@@ -159,6 +165,7 @@ export function renderProviderLogo(provider, application, width, margin, size, l
           </a>
         );
       } else {
+        const hasIdtrust = getHasIdtrustProviderItems(provider);
         return (
           <div style={{
             display: "flex",
@@ -173,7 +180,7 @@ export function renderProviderLogo(provider, application, width, margin, size, l
           onClick={() => window.location.href = getAuthUrl(application, provider, "signup")}
           >
             <a key={provider.displayName} href={getAuthUrl(application, provider, "signup")}>
-              <img width={width} height={width} src={getProviderLogoURL(provider)} alt={provider.displayName} className="provider-img" style={{margin: margin}} />
+              <img width={width} height={width} src={hasIdtrust ? IdtrustImg : getProviderLogoURL(provider)} alt={provider.displayName} className="provider-img" style={{margin: margin}} />
             </a>
             <span style={{
               marginLeft: "6px",
