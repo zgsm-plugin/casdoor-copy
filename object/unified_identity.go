@@ -143,6 +143,15 @@ func createIdentityBindingsWithValue(session *xorm.Session, user *User, universa
 		providerValue = getProviderValue(user, primaryProvider)
 	}
 
+	// If still empty, try to auto-detect a valid provider type based on user data
+	if providerValue == "" {
+		autoDetectedProvider, autoDetectedValue := autoDetectProviderType(user)
+		if autoDetectedProvider != "" && autoDetectedValue != "" {
+			primaryProvider = autoDetectedProvider
+			providerValue = autoDetectedValue
+		}
+	}
+
 	if providerValue == "" {
 		return fmt.Errorf("cannot get value for provider type: %s", primaryProvider)
 	}
@@ -162,6 +171,51 @@ func createIdentityBindingsWithValue(session *xorm.Session, user *User, universa
 	}
 
 	return nil
+}
+
+// Auto-detect provider type based on user data
+func autoDetectProviderType(user *User) (string, string) {
+	// Priority order: email, phone, username+password
+	if user.Email != "" {
+		return "email", user.Email
+	}
+	if user.Phone != "" {
+		return "phone", user.Phone
+	}
+	if user.Password != "" {
+		return "password", fmt.Sprintf("%s/%s", user.Owner, user.Name)
+	}
+
+	// Check other OAuth providers
+	if user.GitHub != "" {
+		return "github", user.GitHub
+	}
+	if user.Google != "" {
+		return "google", user.Google
+	}
+	if user.WeChat != "" {
+		return "wechat", user.WeChat
+	}
+	if user.QQ != "" {
+		return "qq", user.QQ
+	}
+	if user.Facebook != "" {
+		return "facebook", user.Facebook
+	}
+	if user.DingTalk != "" {
+		return "dingtalk", user.DingTalk
+	}
+	if user.Weibo != "" {
+		return "weibo", user.Weibo
+	}
+	if user.Ldap != "" {
+		return "ldap", user.Ldap
+	}
+	if user.Custom != "" {
+		return "custom", user.Custom
+	}
+
+	return "", ""
 }
 
 // Helper function: Get value corresponding to provider type

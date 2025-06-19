@@ -143,7 +143,7 @@ func SignUpWithPhone(phoneNum, CountryCode string) error {
 		Karma:       0,
 	}
 
-	affected, err := object.AddUser(user, "en", "email")
+	affected, err := object.AddUser(user, "en", "phone")
 	if err != nil {
 		return err
 	}
