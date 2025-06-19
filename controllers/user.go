@@ -182,9 +182,11 @@ func (c *ApiController) GetUser() {
 
 		switch {
 		case email != "":
-			user, err = object.GetUserByEmail(owner, email)
+			// Use unified identity binding to find user by email
+			user, err = object.GetUserByFieldWithUnifiedIdentity(owner, "email", email)
 		case phone != "":
-			user, err = object.GetUserByPhone(owner, phone)
+			// Use unified identity binding to find user by phone
+			user, err = object.GetUserByFieldWithUnifiedIdentity(owner, "phone", phone)
 		case userId != "":
 			user = userFromUserId
 		default:

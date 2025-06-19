@@ -297,15 +297,29 @@ func MergeUsers(reservedUserToken, deletedUserToken string) (*MergeResult, error
 		return nil, fmt.Errorf("invalid deleted user token: %v", err)
 	}
 
-	// 2. Get user information
+	// 2. Check if users exist and get user information
 	reservedUser, err := getUserByUniversalId(reservedClaims.UniversalId)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Reserved account does not exist (UniversalId: %s): %v", reservedClaims.UniversalId, err)
+	}
+	if reservedUser == nil {
+		return nil, fmt.Errorf("Reserved account does not exist (UniversalId: %s)", reservedClaims.UniversalId)
 	}
 
 	deletedUser, err := getUserByUniversalId(deletedClaims.UniversalId)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Account to be deleted does not exist (UniversalId: %s): %v", deletedClaims.UniversalId, err)
+	}
+	if deletedUser == nil {
+		return nil, fmt.Errorf("Account to be deleted does not exist (UniversalId: %s)", deletedClaims.UniversalId)
+	}
+
+	// 2.1 Check if users are marked as deleted
+	if reservedUser.IsDeleted {
+		return nil, fmt.Errorf("Reserved account has been deleted and cannot be merged (User: %s)", reservedUser.GetId())
+	}
+	if deletedUser.IsDeleted {
+		return nil, fmt.Errorf("Account to be deleted has been deleted and cannot be merged (User: %s)", deletedUser.GetId())
 	}
 
 	// 3. Verify merge conditions

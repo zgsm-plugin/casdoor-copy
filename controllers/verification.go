@@ -263,7 +263,8 @@ func (c *ApiController) SendVerificationCode() {
 				vform.Dest = user.Email
 			}
 
-			user, err = object.GetUserByEmail(organization.Name, vform.Dest)
+			// Use unified identity binding to find user by email
+			user, err = object.GetUserByFieldWithUnifiedIdentity(organization.Name, "email", vform.Dest)
 			if err != nil {
 				c.ResponseError(err.Error())
 				return
@@ -298,7 +299,8 @@ func (c *ApiController) SendVerificationCode() {
 				vform.Dest = user.Phone
 			}
 
-			if user, err = object.GetUserByPhone(organization.Name, vform.Dest); err != nil {
+			// Use unified identity binding to find user by phone
+			if user, err = object.GetUserByFieldWithUnifiedIdentity(organization.Name, "phone", vform.Dest); err != nil {
 				c.ResponseError(err.Error())
 				return
 			} else if user == nil {
@@ -328,22 +330,8 @@ func (c *ApiController) SendVerificationCode() {
 			return
 		}
 		if provider == nil {
-			if vform.CountryCode == "" {
-				vform.CountryCode = "CN"
-			}
-			err_ := SignUpWithPhone(vform.Dest, "CN")
-
-			if err_ != nil {
-				c.ResponseError(err_.Error())
-				return
-			}
-
-			provider, err = application.GetSmsProvider(vform.Method, vform.CountryCode)
-
-			if err != nil || provider == nil {
-				c.ResponseError(fmt.Sprintf(c.T("verification:please add a SMS provider to the \"Providers\" list for the application: %s"), application.Name))
-				return
-			}
+			c.ResponseError(fmt.Sprintf(c.T("verification:please add a SMS provider to the \"Providers\" list for the application: %s"), application.Name))
+			return
 		}
 
 		if phone, ok := util.GetE164Number(vform.Dest, vform.CountryCode); !ok {
