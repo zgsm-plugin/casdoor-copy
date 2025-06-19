@@ -816,6 +816,8 @@ func GetUserByFieldWithUnifiedIdentity(organizationName string, field string, va
 		// if user.Owner == organizationName {
 		// 	return user, nil
 		// }
+
+		return user, nil
 	}
 
 	// If unified identity binding not found, fallback to old method
