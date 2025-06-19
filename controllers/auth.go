@@ -466,14 +466,7 @@ func (c *ApiController) Login() {
 				}
 			}
 		} else if authForm.Password == "" {
-			if user, err = object.GetUserByFieldsWithUnifiedIdentity(authForm.Organization, authForm.Username); err != nil {
-				c.ResponseError(err.Error(), nil)
-				return
-			} else if user == nil {
-				c.ResponseError(fmt.Sprintf(c.T("general:The user: %s doesn't exist"), util.GetId(authForm.Organization, authForm.Username)))
-				return
-			}
-
+			// First, get application to check if verification code login is enabled
 			var application *object.Application
 			application, err = object.GetApplication(fmt.Sprintf("admin/%s", authForm.Application))
 			if err != nil {
@@ -496,30 +489,101 @@ func (c *ApiController) Login() {
 				return
 			}
 
+			// Check if user exists
+			var userExists bool
+			if user, err = object.GetUserByFieldsWithUnifiedIdentity(authForm.Organization, authForm.Username); err != nil {
+				c.ResponseError(err.Error(), nil)
+				return
+			} else if user == nil {
+				userExists = false
+			} else {
+				userExists = true
+			}
+
+			// STEP 1: Always verify the verification code first (regardless of user existence)
 			var checkDest string
 			if verificationCodeType == object.VerifyTypePhone {
-				authForm.CountryCode = user.GetCountryCode(authForm.CountryCode)
+				if userExists {
+					authForm.CountryCode = user.GetCountryCode(authForm.CountryCode)
+				} else if authForm.CountryCode == "" {
+					authForm.CountryCode = "CN" // Default country code when user doesn't exist
+				}
 				var ok bool
 				if checkDest, ok = util.GetE164Number(authForm.Username, authForm.CountryCode); !ok {
 					c.ResponseError(fmt.Sprintf(c.T("verification:Phone number is invalid in your region %s"), authForm.CountryCode))
 					return
 				}
+			} else {
+				checkDest = authForm.Username
 			}
 
-			// check result through Email or Phone
-			err = object.CheckSigninCode(user, checkDest, authForm.Code, c.GetAcceptLanguage())
-			if err != nil {
-				c.ResponseError(fmt.Sprintf("%s - %s", verificationCodeType, err.Error()))
-				return
+			// Verify verification code - this is the critical security check
+			if userExists {
+				// Use CheckSigninCode for existing users (includes additional security checks)
+				err = object.CheckSigninCode(user, checkDest, authForm.Code, c.GetAcceptLanguage())
+				if err != nil {
+					c.ResponseError(fmt.Sprintf("%s - %s", verificationCodeType, err.Error()))
+					return
+				}
+			} else {
+				// Use basic verification for non-existing users
+				result, err := object.CheckVerificationCode(checkDest, authForm.Code, c.GetAcceptLanguage())
+				if err != nil {
+					c.ResponseError(err.Error())
+					return
+				}
+				if result.Code != object.VerificationSuccess {
+					c.ResponseError(result.Msg)
+					return
+				}
 			}
 
-			// disable the verification code
+			// STEP 2: Handle user creation if needed (only after verification code is confirmed valid)
+			if !userExists {
+				// Verification code is valid, create new user
+				user = &object.User{
+					Owner:       authForm.Organization,
+					Name:        util.GenerateId(),
+					DisplayName: authForm.Username,
+					Type:        "normal-user",
+					CreatedTime: util.GetCurrentTime(),
+					UpdatedTime: util.GetCurrentTime(),
+				}
+
+				// Set user fields based on verification type
+				if verificationCodeType == object.VerifyTypePhone {
+					user.Phone = checkDest
+					user.CountryCode = authForm.CountryCode
+				} else if verificationCodeType == object.VerifyTypeEmail {
+					user.Email = checkDest
+					user.EmailVerified = true
+				}
+
+				// Create user with SMS or Email as primary provider
+				primaryProvider := "SMS"
+				if verificationCodeType == object.VerifyTypeEmail {
+					primaryProvider = "Email"
+				}
+
+				affected, err := object.AddUser(user, c.GetAcceptLanguage(), primaryProvider)
+				if err != nil {
+					c.ResponseError(fmt.Sprintf(c.T("user:Failed to create user: %s"), err.Error()))
+					return
+				}
+				if !affected {
+					c.ResponseError(c.T("user:Failed to create user"))
+					return
+				}
+			}
+
+			// STEP 3: Disable the verification code (it's been used)
 			err = object.DisableVerificationCode(checkDest)
 			if err != nil {
 				c.ResponseError(err.Error(), nil)
 				return
 			}
 
+			// STEP 4: Set verification type for later processing
 			if verificationCodeType == object.VerifyTypePhone {
 				verificationType = "sms"
 			} else {
