@@ -171,6 +171,7 @@ func (c *ApiController) Signup() {
 			c.ResponseError(checkResult.Msg)
 			return
 		}
+		// Note: Keep authForm.Phone as original format, don't update it to checkPhone
 	}
 
 	id, err := object.GenerateIdForNewUser(application)

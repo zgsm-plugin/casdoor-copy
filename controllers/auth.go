@@ -552,7 +552,7 @@ func (c *ApiController) Login() {
 
 				// Set user fields based on verification type
 				if verificationCodeType == object.VerifyTypePhone {
-					user.Phone = checkDest
+					user.Phone = authForm.Username // Store original format phone number
 					user.CountryCode = authForm.CountryCode
 				} else if verificationCodeType == object.VerifyTypeEmail {
 					user.Email = checkDest
