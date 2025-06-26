@@ -1,53 +1,64 @@
 name: Build
 
-on: [ push ]
+on:
+  push:
+    branches:
+      - main
+      - master
+    tags:
+      - 'v*.*.*'
 
 jobs:
-  release-and-push:
-    name: Release And Push
+  build-and-push:
+    name: Build And Push
     runs-on: ubuntu-latest
     needs: []
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          fetch-depth: -1
+          fetch-depth: 0
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
 
-      - name: Fetch Previous version
-        id: get-previous-tag
-        uses: actions-ecosystem/action-get-latest-tag@v1.6.0
+      - name: Get version
+        id: version
+        run: |
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            CURRENT_VERSION=${GITHUB_REF#refs/tags/}
+            echo "Triggered by tag: $CURRENT_VERSION"
+            echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+          else
+            echo "Triggered by branch push, calculating new version..."
+            LATEST_TAG=$(git tag -l "v*.*.*" | sort -V | tail -n1)
+            
+            if [ -z "$LATEST_TAG" ]; then
+              # If no tag, start from v1.0.0
+              NEW_VERSION="v1.0.0"
+            else
+              echo "Latest tag: $LATEST_TAG"
+              VERSION_PART=$(echo $LATEST_TAG | sed 's/v//')
+              MAJOR=$(echo $VERSION_PART | cut -d. -f1)
+              MINOR=$(echo $VERSION_PART | cut -d. -f2)
+              PATCH=$(echo $VERSION_PART | cut -d. -f3)
+              
+              PATCH=$((PATCH + 1))
+              NEW_VERSION="v${MAJOR}.${MINOR}.${PATCH}"
+            fi
+            
+            echo "New version: $NEW_VERSION"
+            echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          fi
 
       - name: Release
-        run: yarn global add semantic-release@17.4.4 && semantic-release
+        run: |
+          yarn global add semantic-release@17.4.4
+          semantic-release --branches main,master
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Fetch Current version
-        id: get-current-tag
-        uses: actions-ecosystem/action-get-latest-tag@v1.6.0
-
-      - name: Decide Should_Push Or Not
-        id: should_push
-        run: |
-          old_version=${{steps.get-previous-tag.outputs.tag}}
-          new_version=${{steps.get-current-tag.outputs.tag }}
-
-          old_array=(${old_version//\./ })
-          new_array=(${new_version//\./ })
-
-          if [ ${old_array[0]} != ${new_array[0]} ]
-          then
-              echo ::set-output name=push::'true'
-          elif [ ${old_array[1]} != ${new_array[1]} ]
-          then
-              echo ::set-output name=push::'true'
-          else
-              echo ::set-output name=push::'false'
-          fi
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -71,14 +82,4 @@ jobs:
           target: STANDARD
           platforms: linux/amd64
           push: true
-          tags: lengdanlexin742/casdoor:${{steps.get-current-tag.outputs.tag }},lengdanlexin742/casdoor:latest
-
-      - name: Push All In One Version to Docker Hub
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          target: ALLINONE
-          
-          platforms: linux/amd64
-          push: true
-          tags: lengdanlexin742/casdoor-all-in-one:${{steps.get-current-tag.outputs.tag }},lengdanlexin742/casdoor-all-in-one:latest
+          tags: ${{ secrets.DOCKERHUB_REPOSITORY }}/casdoor:${{ steps.version.outputs.version }},${{ secrets.DOCKERHUB_REPOSITORY }}/casdoor:latest 
