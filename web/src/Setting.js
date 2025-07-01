@@ -21,12 +21,13 @@ import "./i18n";
 import i18next from "i18next";
 import copy from "copy-to-clipboard";
 import {authConfig} from "./auth/Auth";
-import {Helmet} from "react-helmet";
+// import {Helmet} from "react-helmet";
 import * as Conf from "./Conf";
 import * as phoneNumber from "libphonenumber-js";
 import moment from "moment";
 import {MfaAuthVerifyForm, NextMfa, RequiredMfa} from "./auth/mfa/MfaAuthVerifyForm";
 import {EmailMfaType, SmsMfaType, TotpMfaType} from "./auth/MfaSetupPage";
+import GithubImg from "./static/social-github.png";
 
 const {Option} = Select;
 
@@ -952,6 +953,9 @@ export function getProviderLogoURL(provider) {
     return provider.customLogo;
   }
   if (provider.category === "OAuth") {
+    if (provider.type === "GitHub") {
+      return GithubImg;
+    }
     return `${StaticBaseUrl}/img/social_${provider.type.toLowerCase()}.png`;
   } else {
     const info = OtherProviderInfo[provider.category][provider.type];
@@ -1335,10 +1339,11 @@ export function renderHelmet(application) {
   }
 
   return (
-    <Helmet>
-      <title>{application.organizationObj.displayName}</title>
-      <link rel="icon" href={application.organizationObj.favicon} />
-    </Helmet>
+    // <Helmet>
+    //   <title>{application.organizationObj.displayName}</title>
+    //   <link rel="icon" href={application.organizationObj.favicon} />
+    // </Helmet>
+    <></>
   );
 }
 

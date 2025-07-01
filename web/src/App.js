@@ -14,7 +14,7 @@
 
 import React, {Component, Suspense, lazy} from "react";
 import "./App.less";
-import {Helmet} from "react-helmet";
+// import {Helmet} from "react-helmet";
 import * as Setting from "./Setting";
 import {setOrgIsTourVisible, setTourLogo} from "./TourConfig";
 import {StyleProvider, legacyLogicalPropertiesTransformer} from "@ant-design/cssinjs";
@@ -554,7 +554,7 @@ class App extends Component {
   render() {
     return (
       <React.Fragment>
-        {(this.state.account === undefined || this.state.account === null) ?
+        {/* {(this.state.account === undefined || this.state.account === null) ?
           <Helmet>
             <link rel="icon" href={"https://cdn.casdoor.com/static/favicon.png"} />
           </Helmet> :
@@ -562,7 +562,7 @@ class App extends Component {
             <title>{this.state.account.organization?.displayName}</title>
             <link rel="icon" href={this.state.account.organization?.favicon} />
           </Helmet>
-        }
+        } */}
         <ConfigProvider theme={{
           token: {
             colorPrimary: this.state.themeData.colorPrimary,
