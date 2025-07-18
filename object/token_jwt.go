@@ -68,85 +68,85 @@ type UserWithoutThirdIdp struct {
 	UpdatedTime string `xorm:"varchar(100)" json:"updatedTime"`
 	DeletedTime string `xorm:"varchar(100)" json:"deletedTime"`
 
-	Id                string   `xorm:"varchar(100) index" json:"id"`
-	Type              string   `xorm:"varchar(100)" json:"type"`
-	Password          string   `xorm:"varchar(150)" json:"password"`
-	PasswordSalt      string   `xorm:"varchar(100)" json:"passwordSalt"`
-	PasswordType      string   `xorm:"varchar(100)" json:"passwordType"`
-	DisplayName       string   `xorm:"varchar(100)" json:"displayName"`
-	FirstName         string   `xorm:"varchar(100)" json:"firstName"`
-	LastName          string   `xorm:"varchar(100)" json:"lastName"`
-	Avatar            string   `xorm:"varchar(500)" json:"avatar"`
-	AvatarType        string   `xorm:"varchar(100)" json:"avatarType"`
-	PermanentAvatar   string   `xorm:"varchar(500)" json:"permanentAvatar"`
-	Email             string   `xorm:"varchar(100) index" json:"email"`
-	EmailVerified     bool     `json:"emailVerified"`
-	Phone             string   `xorm:"varchar(100) index" json:"phone"`
-	CountryCode       string   `xorm:"varchar(6)" json:"countryCode"`
-	Region            string   `xorm:"varchar(100)" json:"region"`
-	Location          string   `xorm:"varchar(100)" json:"location"`
-	Address           []string `json:"address"`
-	Affiliation       string   `xorm:"varchar(100)" json:"affiliation"`
-	Title             string   `xorm:"varchar(100)" json:"title"`
-	IdCardType        string   `xorm:"varchar(100)" json:"idCardType"`
-	IdCard            string   `xorm:"varchar(100) index" json:"idCard"`
-	Homepage          string   `xorm:"varchar(100)" json:"homepage"`
-	Bio               string   `xorm:"varchar(100)" json:"bio"`
-	Tag               string   `xorm:"varchar(100)" json:"tag"`
-	Language          string   `xorm:"varchar(100)" json:"language"`
-	Gender            string   `xorm:"varchar(100)" json:"gender"`
-	Birthday          string   `xorm:"varchar(100)" json:"birthday"`
-	Education         string   `xorm:"varchar(100)" json:"education"`
-	Score             int      `json:"score"`
-	Karma             int      `json:"karma"`
-	Ranking           int      `json:"ranking"`
-	IsDefaultAvatar   bool     `json:"isDefaultAvatar"`
-	IsOnline          bool     `json:"isOnline"`
-	IsAdmin           bool     `json:"isAdmin"`
-	IsForbidden       bool     `json:"isForbidden"`
-	IsDeleted         bool     `json:"isDeleted"`
-	SignupApplication string   `xorm:"varchar(100)" json:"signupApplication"`
-	Hash              string   `xorm:"varchar(100)" json:"hash"`
-	PreHash           string   `xorm:"varchar(100)" json:"preHash"`
-	AccessKey         string   `xorm:"varchar(100)" json:"accessKey"`
-	AccessSecret      string   `xorm:"varchar(100)" json:"accessSecret"`
+	Id           string `xorm:"varchar(100) index" json:"id"`
+	Type         string `xorm:"varchar(100)" json:"type"`
+	Password     string `xorm:"varchar(150)" json:"password"`
+	PasswordSalt string `xorm:"varchar(100)" json:"passwordSalt"`
+	PasswordType string `xorm:"varchar(100)" json:"passwordType"`
+	DisplayName  string `xorm:"varchar(100)" json:"displayName"`
+	//FirstName    string `xorm:"varchar(100)" json:"firstName"`
+	//LastName     string `xorm:"varchar(100)" json:"lastName"`
+	//Avatar          string `xorm:"varchar(500)" json:"avatar"`
+	//AvatarType      string `xorm:"varchar(100)" json:"avatarType"`
+	PermanentAvatar string `xorm:"varchar(500)" json:"permanentAvatar"`
+	Email           string `xorm:"varchar(100) index" json:"email"`
+	EmailVerified   bool   `json:"emailVerified"`
+	Phone           string `xorm:"varchar(100) index" json:"phone"`
+	CountryCode     string `xorm:"varchar(6)" json:"countryCode"`
+	//Region          string `xorm:"varchar(100)" json:"region"`
+	//Location        string `xorm:"varchar(100)" json:"location"`
+	//Address         []string `json:"address"`
+	//Affiliation     string   `xorm:"varchar(100)" json:"affiliation"`
+	//Title           string   `xorm:"varchar(100)" json:"title"`
+	//IdCardType        string   `xorm:"varchar(100)" json:"idCardType"`
+	//IdCard            string   `xorm:"varchar(100) index" json:"idCard"`
+	//Homepage          string   `xorm:"varchar(100)" json:"homepage"`
+	//Bio               string `xorm:"varchar(100)" json:"bio"`
+	Tag string `xorm:"varchar(100)" json:"tag"`
+	//Language          string `xorm:"varchar(100)" json:"language"`
+	//Gender            string `xorm:"varchar(100)" json:"gender"`
+	//Birthday          string `xorm:"varchar(100)" json:"birthday"`
+	//Education         string `xorm:"varchar(100)" json:"education"`
+	//Score             int    `json:"score"`
+	//Karma             int    `json:"karma"`
+	//Ranking           int    `json:"ranking"`
+	//IsDefaultAvatar   bool   `json:"isDefaultAvatar"`
+	//IsOnline          bool   `json:"isOnline"`
+	IsAdmin           bool   `json:"isAdmin"`
+	IsForbidden       bool   `json:"isForbidden"`
+	IsDeleted         bool   `json:"isDeleted"`
+	SignupApplication string `xorm:"varchar(100)" json:"signupApplication"`
+	//Hash              string `xorm:"varchar(100)" json:"hash"`
+	//PreHash           string `xorm:"varchar(100)" json:"preHash"`
+	//AccessKey         string `xorm:"varchar(100)" json:"accessKey"`
+	//AccessSecret      string `xorm:"varchar(100)" json:"accessSecret"`
 
-	GitHub   string `xorm:"github varchar(100)" json:"github"`
-	Google   string `xorm:"varchar(100)" json:"google"`
-	QQ       string `xorm:"qq varchar(100)" json:"qq"`
-	WeChat   string `xorm:"wechat varchar(100)" json:"wechat"`
-	Facebook string `xorm:"facebook varchar(100)" json:"facebook"`
-	DingTalk string `xorm:"dingtalk varchar(100)" json:"dingtalk"`
-	Weibo    string `xorm:"weibo varchar(100)" json:"weibo"`
-	Gitee    string `xorm:"gitee varchar(100)" json:"gitee"`
-	LinkedIn string `xorm:"linkedin varchar(100)" json:"linkedin"`
-	Wecom    string `xorm:"wecom varchar(100)" json:"wecom"`
-	Lark     string `xorm:"lark varchar(100)" json:"lark"`
-	Gitlab   string `xorm:"gitlab varchar(100)" json:"gitlab"`
+	GitHub string `xorm:"github varchar(100)" json:"github"`
+	//Google string `xorm:"varchar(100)" json:"google"`
+	//QQ       string `xorm:"qq varchar(100)" json:"qq"`
+	//WeChat   string `xorm:"wechat varchar(100)" json:"wechat"`
+	//Facebook string `xorm:"facebook varchar(100)" json:"facebook"`
+	//DingTalk string `xorm:"dingtalk varchar(100)" json:"dingtalk"`
+	//Weibo    string `xorm:"weibo varchar(100)" json:"weibo"`
+	//Gitee    string `xorm:"gitee varchar(100)" json:"gitee"`
+	//LinkedIn string `xorm:"linkedin varchar(100)" json:"linkedin"`
+	//Wecom    string `xorm:"wecom varchar(100)" json:"wecom"`
+	//Lark     string `xorm:"lark varchar(100)" json:"lark"`
+	//Gitlab   string `xorm:"gitlab varchar(100)" json:"gitlab"`
 
-	CreatedIp      string `xorm:"varchar(100)" json:"createdIp"`
-	LastSigninTime string `xorm:"varchar(100)" json:"lastSigninTime"`
-	LastSigninIp   string `xorm:"varchar(100)" json:"lastSigninIp"`
+	//CreatedIp      string `xorm:"varchar(100)" json:"createdIp"`
+	//LastSigninTime string `xorm:"varchar(100)" json:"lastSigninTime"`
+	//LastSigninIp   string `xorm:"varchar(100)" json:"lastSigninIp"`
 
 	// WebauthnCredentials []webauthn.Credential `xorm:"webauthnCredentials blob" json:"webauthnCredentials"`
-	PreferredMfaType string   `xorm:"varchar(100)" json:"preferredMfaType"`
-	RecoveryCodes    []string `xorm:"varchar(1000)" json:"recoveryCodes"`
-	TotpSecret       string   `xorm:"varchar(100)" json:"totpSecret"`
-	MfaPhoneEnabled  bool     `json:"mfaPhoneEnabled"`
-	MfaEmailEnabled  bool     `json:"mfaEmailEnabled"`
+	//PreferredMfaType string `xorm:"varchar(100)" json:"preferredMfaType"`
+	//RecoveryCodes    []string `xorm:"varchar(1000)" json:"recoveryCodes"`
+	//TotpSecret       string   `xorm:"varchar(100)" json:"totpSecret"`
+	//MfaPhoneEnabled  bool     `json:"mfaPhoneEnabled"`
+	//MfaEmailEnabled  bool     `json:"mfaEmailEnabled"`
 	// MultiFactorAuths    []*MfaProps           `xorm:"-" json:"multiFactorAuths,omitempty"`
 
-	Ldap       string            `xorm:"ldap varchar(100)" json:"ldap"`
+	//Ldap       string            `xorm:"ldap varchar(100)" json:"ldap"`
 	Properties map[string]string `json:"properties"`
 
-	Roles       []*Role       `json:"roles"`
-	Permissions []*Permission `json:"permissions"`
-	Groups      []string      `xorm:"groups varchar(1000)" json:"groups"`
+	//Roles       []*Role       `json:"roles"`
+	//Permissions []*Permission `json:"permissions"`
+	//Groups      []string      `xorm:"groups varchar(1000)" json:"groups"`
 
-	LastSigninWrongTime string `xorm:"varchar(100)" json:"lastSigninWrongTime"`
-	SigninWrongTimes    int    `json:"signinWrongTimes"`
+	//LastSigninWrongTime string `xorm:"varchar(100)" json:"lastSigninWrongTime"`
+	//SigninWrongTimes    int    `json:"signinWrongTimes"`
 
-	ManagedAccounts []ManagedAccount `xorm:"managedAccounts blob" json:"managedAccounts"`
+	//ManagedAccounts []ManagedAccount `xorm:"managedAccounts blob" json:"managedAccounts"`
 }
 
 type ClaimsShort struct {
@@ -218,83 +218,83 @@ func getUserWithoutThirdIdp(user *User) *UserWithoutThirdIdp {
 		UpdatedTime: user.UpdatedTime,
 		DeletedTime: user.DeletedTime,
 
-		Id:                user.Id,
-		Type:              user.Type,
-		Password:          user.Password,
-		PasswordSalt:      user.PasswordSalt,
-		PasswordType:      user.PasswordType,
-		DisplayName:       user.DisplayName,
-		FirstName:         user.FirstName,
-		LastName:          user.LastName,
-		Avatar:            user.Avatar,
-		AvatarType:        user.AvatarType,
-		PermanentAvatar:   user.PermanentAvatar,
-		Email:             user.Email,
-		EmailVerified:     user.EmailVerified,
-		Phone:             user.Phone,
-		CountryCode:       user.CountryCode,
-		Region:            user.Region,
-		Location:          user.Location,
-		Address:           user.Address,
-		Affiliation:       user.Affiliation,
-		Title:             user.Title,
-		IdCardType:        user.IdCardType,
-		IdCard:            user.IdCard,
-		Homepage:          user.Homepage,
-		Bio:               user.Bio,
-		Tag:               user.Tag,
-		Language:          user.Language,
-		Gender:            user.Gender,
-		Birthday:          user.Birthday,
-		Education:         user.Education,
-		Score:             user.Score,
-		Karma:             user.Karma,
-		Ranking:           user.Ranking,
-		IsDefaultAvatar:   user.IsDefaultAvatar,
-		IsOnline:          user.IsOnline,
+		Id:           user.Id,
+		Type:         user.Type,
+		Password:     user.Password,
+		PasswordSalt: user.PasswordSalt,
+		PasswordType: user.PasswordType,
+		DisplayName:  user.DisplayName,
+		//FirstName:       user.FirstName,
+		//LastName:        user.LastName,
+		//Avatar:          user.Avatar,
+		//AvatarType:      user.AvatarType,
+		//PermanentAvatar: user.PermanentAvatar,
+		//Email:         user.Email,
+		//EmailVerified: user.EmailVerified,
+		Phone: user.Phone,
+		//CountryCode:   user.CountryCode,
+		//Region:            user.Region,
+		//Location:    user.Location,
+		//Address:     user.Address,
+		//Affiliation: user.Affiliation,
+		//Title:       user.Title,
+		//IdCardType:        user.IdCardType,
+		//IdCard:            user.IdCard,
+		//Homepage:          user.Homepage,
+		//Bio:               user.Bio,
+		Tag: user.Tag,
+		//Language:          user.Language,
+		//Gender:            user.Gender,
+		//Birthday:          user.Birthday,
+		//Education:         user.Education,
+		//Score:             user.Score,
+		//Karma:             user.Karma,
+		//Ranking: user.Ranking,
+		//IsDefaultAvatar:   user.IsDefaultAvatar,
+		//IsOnline:          user.IsOnline,
 		IsAdmin:           user.IsAdmin,
 		IsForbidden:       user.IsForbidden,
 		IsDeleted:         user.IsDeleted,
 		SignupApplication: user.SignupApplication,
-		Hash:              user.Hash,
-		PreHash:           user.PreHash,
-		AccessKey:         user.AccessKey,
-		AccessSecret:      user.AccessSecret,
+		//Hash:              user.Hash,
+		//PreHash:      user.PreHash,
+		//AccessKey:    user.AccessKey,
+		//AccessSecret: user.AccessSecret,
 
-		GitHub:   user.GitHub,
-		Google:   user.Google,
-		QQ:       user.QQ,
-		WeChat:   user.WeChat,
-		Facebook: user.Facebook,
-		DingTalk: user.DingTalk,
-		Weibo:    user.Weibo,
-		Gitee:    user.Gitee,
-		LinkedIn: user.LinkedIn,
-		Wecom:    user.Wecom,
-		Lark:     user.Lark,
-		Gitlab:   user.Gitlab,
+		GitHub: user.GitHub,
+		//Google: user.Google,
+		//QQ:       user.QQ,
+		//WeChat:   user.WeChat,
+		//Facebook: user.Facebook,
+		//DingTalk: user.DingTalk,
+		//Weibo:    user.Weibo,
+		//Gitee:    user.Gitee,
+		//LinkedIn: user.LinkedIn,
+		//Wecom:    user.Wecom,
+		//Lark:     user.Lark,
+		//Gitlab:   user.Gitlab,
 
-		CreatedIp:      user.CreatedIp,
-		LastSigninTime: user.LastSigninTime,
-		LastSigninIp:   user.LastSigninIp,
+		//CreatedIp:      user.CreatedIp,
+		//LastSigninTime: user.LastSigninTime,
+		//LastSigninIp:   user.LastSigninIp,
 
-		PreferredMfaType: user.PreferredMfaType,
-		RecoveryCodes:    user.RecoveryCodes,
-		TotpSecret:       user.TotpSecret,
-		MfaPhoneEnabled:  user.MfaPhoneEnabled,
-		MfaEmailEnabled:  user.MfaEmailEnabled,
+		//PreferredMfaType: user.PreferredMfaType,
+		//RecoveryCodes:    user.RecoveryCodes,
+		//TotpSecret:       user.TotpSecret,
+		//MfaPhoneEnabled: user.MfaPhoneEnabled,
+		//MfaEmailEnabled: user.MfaEmailEnabled,
 
-		Ldap:       user.Ldap,
+		//Ldap:       user.Ldap,
 		Properties: user.Properties,
 
-		Roles:       user.Roles,
-		Permissions: user.Permissions,
-		Groups:      user.Groups,
+		//Roles:       user.Roles,
+		//Permissions: user.Permissions,
+		//Groups:      user.Groups,
 
-		LastSigninWrongTime: user.LastSigninWrongTime,
-		SigninWrongTimes:    user.SigninWrongTimes,
+		//LastSigninWrongTime: user.LastSigninWrongTime,
+		//SigninWrongTimes:    user.SigninWrongTimes,
 
-		ManagedAccounts: user.ManagedAccounts,
+		//ManagedAccounts: user.ManagedAccounts,
 	}
 
 	return res
@@ -386,6 +386,9 @@ func refineUser(user *User) *User {
 }
 
 func generateJwtToken(application *Application, user *User, provider string, nonce string, scope string, host string) (string, string, string, error) {
+	if provider == "" && user.Phone != "" {
+		user.DisplayName = "ph_" + user.Phone
+	}
 	nowTime := time.Now()
 	expireTime := nowTime.Add(time.Duration(application.ExpireInHours) * time.Hour)
 	refreshExpireTime := nowTime.Add(time.Duration(application.RefreshExpireInHours) * time.Hour)

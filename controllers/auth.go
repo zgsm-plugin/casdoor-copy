@@ -815,6 +815,9 @@ func (c *ApiController) Login() {
 			}
 
 			if user != nil && !user.IsDeleted {
+
+				user.DisplayName = getDisplayNameForProvider(provider.Type, userInfo, "")
+
 				// Sign in via OAuth (want to sign up but already have account)
 				// sync info from 3rd-party if possible
 				_, err = object.SetUserOAuthProperties(organization, user, provider.Type, userInfo)
@@ -910,18 +913,18 @@ func (c *ApiController) Login() {
 					}
 
 					user = &object.User{
-						Owner:             application.Organization,
-						Name:              userInfo.Username,
-						CreatedTime:       util.GetCurrentTime(),
-						Id:                userId,
-						Type:              "normal-user",
-						DisplayName:       userInfo.DisplayName,
-						Avatar:            userInfo.AvatarUrl,
-						Address:           []string{},
-						Email:             userInfo.Email,
-						Phone:             userInfo.Phone,
-						CountryCode:       userInfo.CountryCode,
-						Region:            userInfo.CountryCode,
+						Owner:       application.Organization,
+						Name:        userInfo.Username,
+						CreatedTime: util.GetCurrentTime(),
+						Id:          userId,
+						Type:        "normal-user",
+						DisplayName: userInfo.DisplayName,
+						Avatar:      userInfo.AvatarUrl,
+						Address:     []string{},
+						Email:       userInfo.Email,
+						Phone:       userInfo.Phone,
+						CountryCode: userInfo.CountryCode,
+						//Region:            userInfo.CountryCode,
 						Score:             initScore,
 						IsAdmin:           false,
 						IsForbidden:       false,
@@ -929,6 +932,8 @@ func (c *ApiController) Login() {
 						SignupApplication: application.Name,
 						Properties:        properties,
 					}
+
+					user.DisplayName = getDisplayNameForProvider(provider.Type, userInfo, "")
 
 					var affected bool
 					// To solve the problem that identity binding cannot be created due to insufficient GitHub API permissions
@@ -1132,7 +1137,7 @@ func (c *ApiController) Login() {
 	if authForm.Language != "" {
 		user := c.getCurrentUser()
 		if user != nil {
-			user.Language = authForm.Language
+			//user.Language = authForm.Language
 			_, err = object.UpdateUser(user.GetId(), user, []string{"language"}, user.IsAdmin)
 			if err != nil {
 				c.ResponseError(err.Error())
@@ -1143,6 +1148,18 @@ func (c *ApiController) Login() {
 
 	c.Data["json"] = resp
 	c.ServeJSON()
+}
+
+// getDisplayNameForProvider Generate a display name based on provider type and user information
+func getDisplayNameForProvider(providerType string, userInfo *idp.UserInfo, defaultDisplayName string) string {
+	switch providerType {
+	case "Custom":
+		return userInfo.Username + userInfo.Id
+	case "GitHub":
+		return "gh_" + userInfo.Username
+	default:
+		return defaultDisplayName
+	}
 }
 
 func (c *ApiController) GetSamlLogin() {
