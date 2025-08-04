@@ -21,13 +21,12 @@ import "./i18n";
 import i18next from "i18next";
 import copy from "copy-to-clipboard";
 import {authConfig} from "./auth/Auth";
-// import {Helmet} from "react-helmet";
+import {Helmet} from "react-helmet";
 import * as Conf from "./Conf";
 import * as phoneNumber from "libphonenumber-js";
 import moment from "moment";
 import {MfaAuthVerifyForm, NextMfa, RequiredMfa} from "./auth/mfa/MfaAuthVerifyForm";
 import {EmailMfaType, SmsMfaType, TotpMfaType} from "./auth/MfaSetupPage";
-import GithubImg from "./static/social-github.png";
 
 const {Option} = Select;
 
@@ -697,18 +696,27 @@ export const MfaRulePrompted = "Prompted";
 export const MfaRuleOptional = "Optional";
 
 export function isRequiredEnableMfa(user, organization) {
-  if (!user || !organization || !organization.mfaItems) {
+  if (!user || !organization || (!organization.mfaItems && !user.mfaItems)) {
     return false;
   }
   return getMfaItemsByRules(user, organization, [MfaRuleRequired]).length > 0;
 }
 
 export function getMfaItemsByRules(user, organization, mfaRules = []) {
-  if (!user || !organization || !organization.mfaItems) {
+  if (!user || !organization || (!organization.mfaItems && !user.mfaItems)) {
     return [];
   }
 
-  return organization.mfaItems.filter((mfaItem) => mfaRules.includes(mfaItem.rule))
+  let mfaItems = organization.mfaItems;
+  if (user.mfaItems && user.mfaItems.length !== 0) {
+    mfaItems = user.mfaItems;
+  }
+
+  if (mfaItems === null) {
+    return [];
+  }
+
+  return mfaItems.filter((mfaItem) => mfaRules.includes(mfaItem.rule))
     .filter((mfaItem) => user.multiFactorAuths.some((mfa) => mfa.mfaType === mfaItem.name && !mfa.enabled));
 }
 
@@ -953,9 +961,6 @@ export function getProviderLogoURL(provider) {
     return provider.customLogo;
   }
   if (provider.category === "OAuth") {
-    if (provider.type === "GitHub") {
-      return GithubImg;
-    }
     return `${StaticBaseUrl}/img/social_${provider.type.toLowerCase()}.png`;
   } else {
     const info = OtherProviderInfo[provider.category][provider.type];
@@ -1190,22 +1195,13 @@ export function renderLogo(application) {
 
   if (application.homepageUrl !== "") {
     return (
-      <>
-        <a target="_blank" rel="noreferrer" href={application.homepageUrl}>
-          <img className="panel-logo" width={60} src={application.logo} alt={application.displayName} />
-        </a>
-        <div style={{
-          marginBottom: "55px",
-          fontSize: "16px",
-          fontWeight: 600,
-        }}>
-          {i18next.t("login:Log in to Zhuge Shenma")}
-        </div>
-      </>
+      <a target="_blank" rel="noreferrer" href={application.homepageUrl}>
+        <img className="panel-logo" width={250} src={application.logo} alt={application.displayName} />
+      </a>
     );
   } else {
     return (
-      <img className="panel-logo" width={60} src={application.logo} alt={application.displayName} />
+      <img className="panel-logo" width={250} src={application.logo} alt={application.displayName} />
     );
   }
 }
@@ -1339,11 +1335,10 @@ export function renderHelmet(application) {
   }
 
   return (
-    // <Helmet>
-    //   <title>{application.organizationObj.displayName}</title>
-    //   <link rel="icon" href={application.organizationObj.favicon} />
-    // </Helmet>
-    <></>
+    <Helmet>
+      <title>{application.organizationObj.displayName}</title>
+      <link rel="icon" href={application.organizationObj.favicon} />
+    </Helmet>
   );
 }
 
@@ -1521,6 +1516,54 @@ export function getCurrencySymbol(currency) {
     return "$";
   } else if (currency === "CNY" || currency === "cny") {
     return "¥";
+  } else if (currency === "EUR" || currency === "eur") {
+    return "€";
+  } else if (currency === "JPY" || currency === "jpy") {
+    return "¥";
+  } else if (currency === "GBP" || currency === "gbp") {
+    return "£";
+  } else if (currency === "AUD" || currency === "aud") {
+    return "A$";
+  } else if (currency === "CAD" || currency === "cad") {
+    return "C$";
+  } else if (currency === "CHF" || currency === "chf") {
+    return "CHF";
+  } else if (currency === "HKD" || currency === "hkd") {
+    return "HK$";
+  } else if (currency === "SGD" || currency === "sgd") {
+    return "S$";
+  } else if (currency === "BRL" || currency === "brl") {
+    return "R$";
+  } else if (currency === "PLN" || currency === "pln") {
+    return "zł";
+  } else if (currency === "KRW" || currency === "krw") {
+    return "₩";
+  } else if (currency === "INR" || currency === "inr") {
+    return "₹";
+  } else if (currency === "RUB" || currency === "rub") {
+    return "₽";
+  } else if (currency === "MXN" || currency === "mxn") {
+    return "$";
+  } else if (currency === "ZAR" || currency === "zar") {
+    return "R";
+  } else if (currency === "TRY" || currency === "try") {
+    return "₺";
+  } else if (currency === "SEK" || currency === "sek") {
+    return "kr";
+  } else if (currency === "NOK" || currency === "nok") {
+    return "kr";
+  } else if (currency === "DKK" || currency === "dkk") {
+    return "kr";
+  } else if (currency === "THB" || currency === "thb") {
+    return "฿";
+  } else if (currency === "MYR" || currency === "myr") {
+    return "RM";
+  } else if (currency === "TWD" || currency === "twd") {
+    return "NT$";
+  } else if (currency === "CZK" || currency === "czk") {
+    return "Kč";
+  } else if (currency === "HUF" || currency === "huf") {
+    return "Ft";
   } else {
     return currency;
   }
@@ -1585,6 +1628,11 @@ export function getDefaultHtmlEmailContent() {
     <div class="code">
         %s
     </div>
+    <reset-link>
+      <div class="link">
+         Or click this <a href="%link">link</a> to reset
+      </div>
+    </reset-link>
     <p>Thanks</p>
     <p>Casbin Team</p>
     <hr>
@@ -1619,6 +1667,36 @@ export function getCurrencyText(product) {
     return i18next.t("currency:SGD");
   } else if (product?.currency === "BRL") {
     return i18next.t("currency:BRL");
+  } else if (product?.currency === "PLN") {
+    return i18next.t("currency:PLN");
+  } else if (product?.currency === "KRW") {
+    return i18next.t("currency:KRW");
+  } else if (product?.currency === "INR") {
+    return i18next.t("currency:INR");
+  } else if (product?.currency === "RUB") {
+    return i18next.t("currency:RUB");
+  } else if (product?.currency === "MXN") {
+    return i18next.t("currency:MXN");
+  } else if (product?.currency === "ZAR") {
+    return i18next.t("currency:ZAR");
+  } else if (product?.currency === "TRY") {
+    return i18next.t("currency:TRY");
+  } else if (product?.currency === "SEK") {
+    return i18next.t("currency:SEK");
+  } else if (product?.currency === "NOK") {
+    return i18next.t("currency:NOK");
+  } else if (product?.currency === "DKK") {
+    return i18next.t("currency:DKK");
+  } else if (product?.currency === "THB") {
+    return i18next.t("currency:THB");
+  } else if (product?.currency === "MYR") {
+    return i18next.t("currency:MYR");
+  } else if (product?.currency === "TWD") {
+    return i18next.t("currency:TWD");
+  } else if (product?.currency === "CZK") {
+    return i18next.t("currency:CZK");
+  } else if (product?.currency === "HUF") {
+    return i18next.t("currency:HUF");
   } else {
     return "(Unknown currency)";
   }
@@ -1737,4 +1815,25 @@ export function renderLoginPanel(application, getInnerComponent, componentThis) 
       </div>
     </div>
   );
+}
+
+export function createFormAndSubmit(url, params) {
+  const form = document.createElement("form");
+  form.method = "post";
+  form.action = url;
+
+  for (const k in params) {
+    if (!params[k]) {
+      continue;
+    }
+    const input = document.createElement("input");
+    input.type = "hidden";
+    input.name = k;
+    input.value = params[k];
+    form.appendChild(input);
+  }
+
+  document.body.appendChild(form);
+  form.submit();
+  setTimeout(() => {form.remove();}, 500);
 }

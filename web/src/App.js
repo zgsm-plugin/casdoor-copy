@@ -14,7 +14,7 @@
 
 import React, {Component, Suspense, lazy} from "react";
 import "./App.less";
-// import {Helmet} from "react-helmet";
+import {Helmet} from "react-helmet";
 import * as Setting from "./Setting";
 import {setOrgIsTourVisible, setTourLogo} from "./TourConfig";
 import {StyleProvider, legacyLogicalPropertiesTransformer} from "@ant-design/cssinjs";
@@ -37,10 +37,6 @@ const {Footer, Content} = Layout;
 import {setTwoToneColor} from "@ant-design/icons";
 import * as ApplicationBackend from "./backend/ApplicationBackend";
 import * as Cookie from "cookie";
-import PrivacyPolicyEn from "./static/privacy-policy-en.pdf";
-import PrivacyPolicyZh from "./static/privacy-policy-zh.pdf";
-import TermsOfServiceEn from "./static/terms-of-service-en.pdf";
-import TermsOfServiceZh from "./static/terms-of-service-zh.pdf";
 
 setTwoToneColor("rgb(87,52,211)");
 
@@ -251,7 +247,9 @@ class App extends Component {
           account.organization = res.data2;
           accessToken = res.data.accessToken;
 
-          this.setLanguage(account);
+          if (!localStorage.getItem("language")) {
+            this.setLanguage(account);
+          }
           this.setTheme(Setting.getThemeData(account.organization), Conf.InitThemeAlgorithm);
           setTourLogo(account.organization.logo);
           setOrgIsTourVisible(account.organization.enableTour);
@@ -277,13 +275,6 @@ class App extends Component {
   renderFooter(logo, footerHtml) {
     logo = logo ?? this.state.logo;
     footerHtml = footerHtml ?? this.state.application?.footerHtml;
-    const language = Setting.getLanguage();
-    const privacyPolicy = language === "en" ? PrivacyPolicyEn : PrivacyPolicyZh;
-    const termsOfService = language === "en" ? TermsOfServiceEn : TermsOfServiceZh;
-    const isLoginSuccessPage = this.props.location.pathname === "/login/success";
-    const commonStyle = {
-      fontWeight: 600, color: isLoginSuccessPage ? "#fff" : "",
-    };
     return (
       <React.Fragment>
         {!this.state.account ? null : <div style={{display: "none"}} id="CasdoorApplicationName" value={this.state.account.signupApplication} />}
@@ -291,13 +282,6 @@ class App extends Component {
         <Footer id="footer" style={
           {
             textAlign: "center",
-            zIndex: 1000,
-            ...(isLoginSuccessPage
-              ? {
-                backgroundColor: "#000",
-                color: "#fff",
-              }
-              : {}),
           }
         }>
           {
@@ -308,26 +292,7 @@ class App extends Component {
               : (
                 Conf.CustomFooter !== null ? Conf.CustomFooter : (
                   <React.Fragment>
-                    {/* Powered by <a target="_blank" href="https://casdoor.org" rel="noreferrer"><img style={{paddingBottom: "3px"}} height={"20px"} alt={"Casdoor"} src={logo} /></a> */}
-                    <div className="terms-privacy" style={{display: "flex", justifyContent: "center", fontSize: "14px"}}>
-                      <div style={{opacity: "0.5"}}>{i18next.t("login:Login by acceptance")}</div>
-                      <a
-                        href={termsOfService}
-                        className="terms-link"
-                        style={commonStyle}
-                        target="open"
-                      >
-                        {i18next.t("login:Terms of Service")}
-                      </a>
-                      <a
-                        href={privacyPolicy}
-                        className="privacy-link"
-                        style={commonStyle}
-                        target="open"
-                      >
-                        {i18next.t("login:Privacy Policy")}
-                      </a>
-                    </div>
+                  Powered by <a target="_blank" href="https://casdoor.org" rel="noreferrer"><img style={{paddingBottom: "3px"}} height={"20px"} alt={"Casdoor"} src={logo} /></a>
                   </React.Fragment>
                 )
               )
@@ -441,6 +406,7 @@ class App extends Component {
                       account={this.state.account}
                       theme={this.state.themeData}
                       themeAlgorithm={this.state.themeAlgorithm}
+                      requiredEnableMfa={this.state.requiredEnableMfa}
                       updateApplication={(application) => {
                         this.setState({
                           application: application,
@@ -554,7 +520,7 @@ class App extends Component {
   render() {
     return (
       <React.Fragment>
-        {/* {(this.state.account === undefined || this.state.account === null) ?
+        {(this.state.account === undefined || this.state.account === null) ?
           <Helmet>
             <link rel="icon" href={"https://cdn.casdoor.com/static/favicon.png"} />
           </Helmet> :
@@ -562,7 +528,7 @@ class App extends Component {
             <title>{this.state.account.organization?.displayName}</title>
             <link rel="icon" href={this.state.account.organization?.favicon} />
           </Helmet>
-        } */}
+        }
         <ConfigProvider theme={{
           token: {
             colorPrimary: this.state.themeData.colorPrimary,

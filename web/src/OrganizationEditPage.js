@@ -562,6 +562,16 @@ class OrganizationEditPage extends React.Component {
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 19 : 2}>
+            {Setting.getLabel(i18next.t("application:Disable signin"), i18next.t("application:Disable signin - Tooltip"))} :
+          </Col>
+          <Col span={1} >
+            <Switch checked={this.state.organization.disableSignin} onChange={checked => {
+              this.updateOrganizationField("disableSignin", checked);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {Setting.getLabel(i18next.t("organization:Navbar items"), i18next.t("organization:Navbar items - Tooltip"))} :
           </Col>
@@ -601,6 +611,16 @@ class OrganizationEditPage extends React.Component {
               table={this.state.organization.accountItems}
               onUpdateTable={(value) => {this.updateOrganizationField("accountItems", value);}}
             />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("application:MFA remember time"), i18next.t("application:MFA remember time - Tooltip"))} :
+          </Col>
+          <Col span={22} >
+            <InputNumber style={{width: "150px"}} value={this.state.organization.mfaRememberInHours} min={1} step={1} precision={0} addonAfter="Hours" onChange={value => {
+              this.updateOrganizationField("mfaRememberInHours", value);
+            }} />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
