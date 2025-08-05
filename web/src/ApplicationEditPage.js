@@ -37,6 +37,7 @@ import ThemeEditor from "./common/theme/ThemeEditor";
 import SigninTable from "./table/SigninTable";
 import Editor from "./common/Editor";
 import * as GroupBackend from "./backend/GroupBackend";
+import ZgsmLogo from "./static/zgsm-logo.png";
 
 const {Option} = Select;
 
@@ -94,7 +95,7 @@ const sideTemplate = `<style>
   }
 </style>
 <div class="left-model">
-  <span class="side-logo"> <img src="${Setting.StaticBaseUrl}/img/casdoor-logo_1185x256.png" alt="Casdoor" style="width: 120px"> 
+  <span class="side-logo"> <img src="${ZgsmLogo}" alt="Casdoor" style="width: 120px"> 
     <span>SSO</span> 
   </span>
   <div class="img">

@@ -20,11 +20,15 @@ import React, {useState} from "react";
 import i18next from "i18next";
 import {
   AppstoreTwoTone,
-  BarsOutlined, DeploymentUnitOutlined, DollarTwoTone, DownOutlined,
+  BarsOutlined, DeploymentUnitOutlined,
+  // DollarTwoTone,
+  DownOutlined,
   HomeTwoTone,
   LockTwoTone, LogoutOutlined,
-  SafetyCertificateTwoTone, SettingOutlined, SettingTwoTone,
-  WalletTwoTone
+  // SafetyCertificateTwoTone,
+  SettingOutlined
+  // SettingTwoTone
+  // WalletTwoTone
 } from "@ant-design/icons";
 import Dashboard from "./basic/Dashboard";
 import AppListPage from "./basic/AppListPage";
@@ -296,48 +300,48 @@ function ManagementPage(props) {
         Setting.getItem(<Link to="/certs">{i18next.t("general:Certs")}</Link>, "/certs"),
       ]));
 
-      res.push(Setting.getItem(<Link style={{color: textColor}} to="/roles">{i18next.t("general:Authorization")}</Link>, "/auth", <SafetyCertificateTwoTone twoToneColor={twoToneColor} />, [
-        Setting.getItem(<Link to="/roles">{i18next.t("general:Roles")}</Link>, "/roles"),
-        Setting.getItem(<Link to="/permissions">{i18next.t("general:Permissions")}</Link>, "/permissions"),
-        Setting.getItem(<Link to="/models">{i18next.t("general:Models")}</Link>, "/models"),
-        Setting.getItem(<Link to="/adapters">{i18next.t("general:Adapters")}</Link>, "/adapters"),
-        Setting.getItem(<Link to="/enforcers">{i18next.t("general:Enforcers")}</Link>, "/enforcers"),
-      ].filter(item => {
-        if (!Setting.isLocalAdminUser(props.account) && ["/models", "/adapters", "/enforcers"].includes(item.key)) {
-          return false;
-        } else {
-          return true;
-        }
-      })));
+      // res.push(Setting.getItem(<Link style={{color: textColor}} to="/roles">{i18next.t("general:Authorization")}</Link>, "/auth", <SafetyCertificateTwoTone twoToneColor={twoToneColor} />, [
+      //   Setting.getItem(<Link to="/roles">{i18next.t("general:Roles")}</Link>, "/roles"),
+      //   Setting.getItem(<Link to="/permissions">{i18next.t("general:Permissions")}</Link>, "/permissions"),
+      //   Setting.getItem(<Link to="/models">{i18next.t("general:Models")}</Link>, "/models"),
+      //   Setting.getItem(<Link to="/adapters">{i18next.t("general:Adapters")}</Link>, "/adapters"),
+      //   Setting.getItem(<Link to="/enforcers">{i18next.t("general:Enforcers")}</Link>, "/enforcers"),
+      // ].filter(item => {
+      //   if (!Setting.isLocalAdminUser(props.account) && ["/models", "/adapters", "/enforcers"].includes(item.key)) {
+      //     return false;
+      //   } else {
+      //     return true;
+      //   }
+      // })));
 
-      res.push(Setting.getItem(<Link style={{color: textColor}} to="/sessions">{i18next.t("general:Logging & Auditing")}</Link>, "/logs", <WalletTwoTone twoToneColor={twoToneColor} />, [
-        Setting.getItem(<Link to="/sessions">{i18next.t("general:Sessions")}</Link>, "/sessions"),
-        Conf.CasvisorUrl ? Setting.getItem(<a target="_blank" rel="noreferrer" href={Conf.CasvisorUrl}>{i18next.t("general:Records")}</a>, "/records")
-          : Setting.getItem(<Link to="/records">{i18next.t("general:Records")}</Link>, "/records"),
-        Setting.getItem(<Link to="/tokens">{i18next.t("general:Tokens")}</Link>, "/tokens"),
-        Setting.getItem(<Link to="/verifications">{i18next.t("general:Verifications")}</Link>, "/verifications"),
-      ]));
+      // res.push(Setting.getItem(<Link style={{color: textColor}} to="/sessions">{i18next.t("general:Logging & Auditing")}</Link>, "/logs", <WalletTwoTone twoToneColor={twoToneColor} />, [
+      //   Setting.getItem(<Link to="/sessions">{i18next.t("general:Sessions")}</Link>, "/sessions"),
+      //   Conf.CasvisorUrl ? Setting.getItem(<a target="_blank" rel="noreferrer" href={Conf.CasvisorUrl}>{i18next.t("general:Records")}</a>, "/records")
+      //     : Setting.getItem(<Link to="/records">{i18next.t("general:Records")}</Link>, "/records"),
+      //   Setting.getItem(<Link to="/tokens">{i18next.t("general:Tokens")}</Link>, "/tokens"),
+      //   Setting.getItem(<Link to="/verifications">{i18next.t("general:Verifications")}</Link>, "/verifications"),
+      // ]));
 
-      res.push(Setting.getItem(<Link style={{color: textColor}} to="/products">{i18next.t("general:Business & Payments")}</Link>, "/business", <DollarTwoTone twoToneColor={twoToneColor} />, [
-        Setting.getItem(<Link to="/products">{i18next.t("general:Products")}</Link>, "/products"),
-        Setting.getItem(<Link to="/payments">{i18next.t("general:Payments")}</Link>, "/payments"),
-        Setting.getItem(<Link to="/plans">{i18next.t("general:Plans")}</Link>, "/plans"),
-        Setting.getItem(<Link to="/pricings">{i18next.t("general:Pricings")}</Link>, "/pricings"),
-        Setting.getItem(<Link to="/subscriptions">{i18next.t("general:Subscriptions")}</Link>, "/subscriptions"),
-        Setting.getItem(<Link to="/transactions">{i18next.t("general:Transactions")}</Link>, "/transactions"),
-      ]));
+      // res.push(Setting.getItem(<Link style={{color: textColor}} to="/products">{i18next.t("general:Business & Payments")}</Link>, "/business", <DollarTwoTone twoToneColor={twoToneColor} />, [
+      //   Setting.getItem(<Link to="/products">{i18next.t("general:Products")}</Link>, "/products"),
+      //   Setting.getItem(<Link to="/payments">{i18next.t("general:Payments")}</Link>, "/payments"),
+      //   Setting.getItem(<Link to="/plans">{i18next.t("general:Plans")}</Link>, "/plans"),
+      //   Setting.getItem(<Link to="/pricings">{i18next.t("general:Pricings")}</Link>, "/pricings"),
+      //   Setting.getItem(<Link to="/subscriptions">{i18next.t("general:Subscriptions")}</Link>, "/subscriptions"),
+      //   Setting.getItem(<Link to="/transactions">{i18next.t("general:Transactions")}</Link>, "/transactions"),
+      // ]));
 
-      if (Setting.isAdminUser(props.account)) {
-        res.push(Setting.getItem(<Link style={{color: textColor}} to="/sysinfo">{i18next.t("general:Admin")}</Link>, "/admin", <SettingTwoTone twoToneColor={twoToneColor} />, [
-          Setting.getItem(<Link to="/sysinfo">{i18next.t("general:System Info")}</Link>, "/sysinfo"),
-          Setting.getItem(<Link to="/syncers">{i18next.t("general:Syncers")}</Link>, "/syncers"),
-          Setting.getItem(<Link to="/webhooks">{i18next.t("general:Webhooks")}</Link>, "/webhooks"),
-          Setting.getItem(<a target="_blank" rel="noreferrer" href={Setting.isLocalhost() ? `${Setting.ServerUrl}/swagger` : "/swagger"}>{i18next.t("general:Swagger")}</a>, "/swagger")]));
-      } else {
-        res.push(Setting.getItem(<Link style={{color: textColor}} to="/syncers">{i18next.t("general:Admin")}</Link>, "/admin", <SettingTwoTone twoToneColor={twoToneColor} />, [
-          Setting.getItem(<Link to="/syncers">{i18next.t("general:Syncers")}</Link>, "/syncers"),
-          Setting.getItem(<Link to="/webhooks">{i18next.t("general:Webhooks")}</Link>, "/webhooks")]));
-      }
+      // if (Setting.isAdminUser(props.account)) {
+      //   res.push(Setting.getItem(<Link style={{color: textColor}} to="/sysinfo">{i18next.t("general:Admin")}</Link>, "/admin", <SettingTwoTone twoToneColor={twoToneColor} />, [
+      //     Setting.getItem(<Link to="/sysinfo">{i18next.t("general:System Info")}</Link>, "/sysinfo"),
+      //     Setting.getItem(<Link to="/syncers">{i18next.t("general:Syncers")}</Link>, "/syncers"),
+      //     Setting.getItem(<Link to="/webhooks">{i18next.t("general:Webhooks")}</Link>, "/webhooks"),
+      //     Setting.getItem(<a target="_blank" rel="noreferrer" href={Setting.isLocalhost() ? `${Setting.ServerUrl}/swagger` : "/swagger"}>{i18next.t("general:Swagger")}</a>, "/swagger")]));
+      // } else {
+      //   res.push(Setting.getItem(<Link style={{color: textColor}} to="/syncers">{i18next.t("general:Admin")}</Link>, "/admin", <SettingTwoTone twoToneColor={twoToneColor} />, [
+      //     Setting.getItem(<Link to="/syncers">{i18next.t("general:Syncers")}</Link>, "/syncers"),
+      //     Setting.getItem(<Link to="/webhooks">{i18next.t("general:Webhooks")}</Link>, "/webhooks")]));
+      // }
     }
 
     if (navItemsIsAll()) {

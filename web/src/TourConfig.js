@@ -1,5 +1,5 @@
 import React from "react";
-import * as Setting from "./Setting";
+import ZgsmLogo from "./static/zgsm-logo.png";
 
 export const TourObj = {
   home: [
@@ -9,7 +9,7 @@ export const TourObj = {
       cover: (
         <img
           alt="casdoor.png"
-          src={`${Setting.StaticBaseUrl}/img/casdoor-logo_1185x256.png`}
+          src={ZgsmLogo}
         />
       ),
     },

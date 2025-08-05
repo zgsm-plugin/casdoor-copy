@@ -27,6 +27,7 @@ import * as phoneNumber from "libphonenumber-js";
 import moment from "moment";
 import {MfaAuthVerifyForm, NextMfa, RequiredMfa} from "./auth/mfa/MfaAuthVerifyForm";
 import {EmailMfaType, SmsMfaType, TotpMfaType} from "./auth/MfaSetupPage";
+import ZgsmLogo from "./static/zgsm-logo.png";
 
 const {Option} = Select;
 
@@ -94,11 +95,7 @@ export function getAlgorithmNames(themeData) {
 }
 
 export function getLogo(themes) {
-  if (themes.includes("dark")) {
-    return `${StaticBaseUrl}/img/casdoor-logo_1185x256_dark.png`;
-  } else {
-    return `${StaticBaseUrl}/img/casdoor-logo_1185x256.png`;
-  }
+  return ZgsmLogo;
 }
 
 export const OtherProviderInfo = {
@@ -1196,12 +1193,12 @@ export function renderLogo(application) {
   if (application.homepageUrl !== "") {
     return (
       <a target="_blank" rel="noreferrer" href={application.homepageUrl}>
-        <img className="panel-logo" width={250} src={application.logo} alt={application.displayName} />
+        <img className="panel-logo" width={100} src={application.logo} alt={application.displayName} />
       </a>
     );
   } else {
     return (
-      <img className="panel-logo" width={250} src={application.logo} alt={application.displayName} />
+      <img className="panel-logo" width={100} src={application.logo} alt={application.displayName} />
     );
   }
 }
@@ -1589,7 +1586,7 @@ export function getUserCommonFields() {
 }
 
 export function getDefaultFooterContent() {
-  return `Powered by <a target="_blank" href="https://casdoor.org" rel="noreferrer"><img style="padding-bottom: 3px" height="20" alt="Casdoor" src="${StaticBaseUrl}/img/casdoor-logo_1185x256.png"/></a>`;
+  return `Powered by <a target="_blank" href="https://costrict.ai" rel="noreferrer"><img style="padding-bottom: 3px" height="20" alt="costrict" src="${ZgsmLogo}"/></a>`;
 }
 
 export function getEmptyFooterContent() {
@@ -1621,7 +1618,7 @@ export function getDefaultHtmlEmailContent() {
 <div class="email-container">
   <div class="header">
         <h3>Casbin Organization</h3>
-        <img src="${StaticBaseUrl}/img/casdoor-logo_1185x256.png" alt="Casdoor Logo" width="300">
+        <img src="${ZgsmLogo}" alt="Casdoor Logo" width="300">
     </div>
     <p><strong>%{user.friendlyName}</strong>, here is your verification code</p>
     <p>Use this code for your transaction. It's valid for 5 minutes</p>

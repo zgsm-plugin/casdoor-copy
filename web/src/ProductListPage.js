@@ -22,6 +22,7 @@ import i18next from "i18next";
 import BaseListPage from "./BaseListPage";
 import {EditOutlined} from "@ant-design/icons";
 import PopconfirmModal from "./common/modal/PopconfirmModal";
+import ZgsmLogo from "./static/zgsm-logo.png";
 
 class ProductListPage extends BaseListPage {
   newProduct() {
@@ -32,7 +33,7 @@ class ProductListPage extends BaseListPage {
       name: `product_${randomName}`,
       createdTime: moment().format(),
       displayName: `New Product - ${randomName}`,
-      image: `${Setting.StaticBaseUrl}/img/casdoor-logo_1185x256.png`,
+      image: ZgsmLogo,
       tag: "Casdoor Summit 2022",
       currency: "USD",
       price: 300,

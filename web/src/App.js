@@ -37,6 +37,7 @@ const {Footer, Content} = Layout;
 import {setTwoToneColor} from "@ant-design/icons";
 import * as ApplicationBackend from "./backend/ApplicationBackend";
 import * as Cookie from "cookie";
+import ZgsmLogo from "./static/zgsm-logo.png";
 
 setTwoToneColor("rgb(87,52,211)");
 
@@ -292,7 +293,7 @@ class App extends Component {
               : (
                 Conf.CustomFooter !== null ? Conf.CustomFooter : (
                   <React.Fragment>
-                  Powered by <a target="_blank" href="https://casdoor.org" rel="noreferrer"><img style={{paddingBottom: "3px"}} height={"20px"} alt={"Casdoor"} src={logo} /></a>
+                  Powered by <a target="_blank" href="https://costrict.ai" rel="noreferrer"><img style={{paddingBottom: "3px"}} height={"20px"} alt={"Costrict"} src={ZgsmLogo} /></a>
                   </React.Fragment>
                 )
               )
