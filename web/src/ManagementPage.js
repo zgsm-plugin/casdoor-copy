@@ -13,14 +13,15 @@
 // limitations under the License.
 
 import * as Setting from "./Setting";
-import {Avatar, Button, Card, Drawer, Dropdown, Menu, Result, Tooltip} from "antd";
+import {Avatar, Button, Card, Drawer, Dropdown, Menu, Result} from "antd";
 import EnableMfaNotification from "./common/notifaction/EnableMfaNotification";
 import {Link, Redirect, Route, Switch, withRouter} from "react-router-dom";
 import React, {useState} from "react";
 import i18next from "i18next";
 import {
   AppstoreTwoTone,
-  BarsOutlined, DeploymentUnitOutlined,
+  BarsOutlined,
+  // DeploymentUnitOutlined,
   // DollarTwoTone,
   DownOutlined,
   HomeTwoTone,
@@ -191,14 +192,14 @@ function ManagementPage(props) {
   function renderWidgets() {
     const widgets = [
       Setting.getItem(<ThemeSelect themeAlgorithm={props.themeAlgorithm} onChange={props.setLogoAndThemeAlgorithm} />, "theme"),
-      Setting.getItem(<LanguageSelect languages={props.account.organization.languages} />, "language"),
-      Setting.getItem(Conf.AiAssistantUrl?.trim() && (
-        <Tooltip title="Click to open AI assistant">
-          <div className="select-box" onClick={props.openAiAssistant}>
-            <DeploymentUnitOutlined style={{fontSize: "24px"}} />
-          </div>
-        </Tooltip>
-      ), "ai-assistant"),
+      // Setting.getItem(<LanguageSelect languages={props.account.organization.languages} />, "language"),
+      // Setting.getItem(Conf.AiAssistantUrl?.trim() && (
+      //   <Tooltip title="Click to open AI assistant">
+      //     <div className="select-box" onClick={props.openAiAssistant}>
+      //       <DeploymentUnitOutlined style={{fontSize: "24px"}} />
+      //     </div>
+      //   </Tooltip>
+      // ), "ai-assistant"),
       Setting.getItem(<OpenTour />, "tour"),
     ];
 
@@ -271,8 +272,8 @@ function ManagementPage(props) {
 
     res.push(Setting.getItem(<Link style={{color: textColor}} to="/">{i18next.t("general:Home")}</Link>, "/home", <HomeTwoTone twoToneColor={twoToneColor} />, [
       Setting.getItem(<Link to="/">{i18next.t("general:Dashboard")}</Link>, "/"),
-      Setting.getItem(<Link to="/shortcuts">{i18next.t("general:Shortcuts")}</Link>, "/shortcuts"),
-      Setting.getItem(<Link to="/apps">{i18next.t("general:Apps")}</Link>, "/apps"),
+      // Setting.getItem(<Link to="/shortcuts">{i18next.t("general:Shortcuts")}</Link>, "/shortcuts"),
+      // Setting.getItem(<Link to="/apps">{i18next.t("general:Apps")}</Link>, "/apps"),
     ].filter(item => {
       return Setting.isLocalAdminUser(props.account);
     })));
@@ -290,14 +291,14 @@ function ManagementPage(props) {
         Setting.getItem(<Link to="/organizations">{i18next.t("general:Organizations")}</Link>, "/organizations"),
         Setting.getItem(<Link to="/groups">{i18next.t("general:Groups")}</Link>, "/groups"),
         Setting.getItem(<Link to="/users">{i18next.t("general:Users")}</Link>, "/users"),
-        Setting.getItem(<Link to="/invitations">{i18next.t("general:Invitations")}</Link>, "/invitations"),
+        // Setting.getItem(<Link to="/invitations">{i18next.t("general:Invitations")}</Link>, "/invitations"),
       ]));
 
       res.push(Setting.getItem(<Link style={{color: textColor}} to="/applications">{i18next.t("general:Identity")}</Link>, "/identity", <LockTwoTone twoToneColor={twoToneColor} />, [
         Setting.getItem(<Link to="/applications">{i18next.t("general:Applications")}</Link>, "/applications"),
         Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"),
-        Setting.getItem(<Link to="/resources">{i18next.t("general:Resources")}</Link>, "/resources"),
-        Setting.getItem(<Link to="/certs">{i18next.t("general:Certs")}</Link>, "/certs"),
+        // Setting.getItem(<Link to="/resources">{i18next.t("general:Resources")}</Link>, "/resources"),
+        // Setting.getItem(<Link to="/certs">{i18next.t("general:Certs")}</Link>, "/certs"),
       ]));
 
       // res.push(Setting.getItem(<Link style={{color: textColor}} to="/roles">{i18next.t("general:Authorization")}</Link>, "/auth", <SafetyCertificateTwoTone twoToneColor={twoToneColor} />, [
