@@ -21,13 +21,13 @@ import "./i18n";
 import i18next from "i18next";
 import copy from "copy-to-clipboard";
 import {authConfig} from "./auth/Auth";
-// import {Helmet} from "react-helmet";
+import {Helmet} from "react-helmet";
 import * as Conf from "./Conf";
 import * as phoneNumber from "libphonenumber-js";
 import moment from "moment";
 import {MfaAuthVerifyForm, NextMfa, RequiredMfa} from "./auth/mfa/MfaAuthVerifyForm";
 import {EmailMfaType, SmsMfaType, TotpMfaType} from "./auth/MfaSetupPage";
-import GithubImg from "./static/social-github.png";
+import ZgsmLogo from "./static/zgsm-logo.png";
 
 const {Option} = Select;
 
@@ -36,31 +36,31 @@ export const ServerUrl = "";
 export const StaticBaseUrl = "https://cdn.casbin.org";
 
 export const Countries = [
-  {label: "English", key: "en", country: "US", alt: "English"},
-  {label: "Español", key: "es", country: "ES", alt: "Español"},
-  {label: "Français", key: "fr", country: "FR", alt: "Français"},
-  {label: "Deutsch", key: "de", country: "DE", alt: "Deutsch"},
+  // {label: "English", key: "en", country: "US", alt: "English"},
+  // {label: "Español", key: "es", country: "ES", alt: "Español"},
+  // {label: "Français", key: "fr", country: "FR", alt: "Français"},
+  // {label: "Deutsch", key: "de", country: "DE", alt: "Deutsch"},
   {label: "中文", key: "zh", country: "CN", alt: "中文"},
-  {label: "Indonesia", key: "id", country: "ID", alt: "Indonesia"},
-  {label: "日本語", key: "ja", country: "JP", alt: "日本語"},
-  {label: "한국어", key: "ko", country: "KR", alt: "한국어"},
-  {label: "Русский", key: "ru", country: "RU", alt: "Русский"},
-  {label: "TiếngViệt", key: "vi", country: "VN", alt: "TiếngViệt"},
-  {label: "Português", key: "pt", country: "PT", alt: "Português"},
-  {label: "Italiano", key: "it", country: "IT", alt: "Italiano"},
-  {label: "Malay", key: "ms", country: "MY", alt: "Malay"},
-  {label: "Türkçe", key: "tr", country: "TR", alt: "Türkçe"},
-  {label: "لغة عربية", key: "ar", country: "SA", alt: "لغة عربية"},
-  {label: "עִבְרִית", key: "he", country: "IL", alt: "עִבְרִית"},
-  {label: "Nederlands", key: "nl", country: "NL", alt: "Nederlands"},
-  {label: "Polski", key: "pl", country: "PL", alt: "Polski"},
-  {label: "Suomi", key: "fi", country: "FI", alt: "Suomi"},
-  {label: "Svenska", key: "sv", country: "SE", alt: "Svenska"},
-  {label: "Українська", key: "uk", country: "UA", alt: "Українська"},
-  {label: "Қазақ", key: "kk", country: "KZ", alt: "Қазақ"},
-  {label: "فارسی", key: "fa", country: "IR", alt: "فارسی"},
-  {label: "Čeština", key: "cs", country: "CZ", alt: "Čeština"},
-  {label: "Slovenčina", key: "sk", country: "SK", alt: "Slovenčina"},
+  // {label: "Indonesia", key: "id", country: "ID", alt: "Indonesia"},
+  // {label: "日本語", key: "ja", country: "JP", alt: "日本語"},
+  // {label: "한국어", key: "ko", country: "KR", alt: "한국어"},
+  // {label: "Русский", key: "ru", country: "RU", alt: "Русский"},
+  // {label: "TiếngViệt", key: "vi", country: "VN", alt: "TiếngViệt"},
+  // {label: "Português", key: "pt", country: "PT", alt: "Português"},
+  // {label: "Italiano", key: "it", country: "IT", alt: "Italiano"},
+  // {label: "Malay", key: "ms", country: "MY", alt: "Malay"},
+  // {label: "Türkçe", key: "tr", country: "TR", alt: "Türkçe"},
+  // {label: "لغة عربية", key: "ar", country: "SA", alt: "لغة عربية"},
+  // {label: "עִבְרִית", key: "he", country: "IL", alt: "עִבְרִית"},
+  // {label: "Nederlands", key: "nl", country: "NL", alt: "Nederlands"},
+  // {label: "Polski", key: "pl", country: "PL", alt: "Polski"},
+  // {label: "Suomi", key: "fi", country: "FI", alt: "Suomi"},
+  // {label: "Svenska", key: "sv", country: "SE", alt: "Svenska"},
+  // {label: "Українська", key: "uk", country: "UA", alt: "Українська"},
+  // {label: "Қазақ", key: "kk", country: "KZ", alt: "Қазақ"},
+  // {label: "فارسی", key: "fa", country: "IR", alt: "فارسی"},
+  // {label: "Čeština", key: "cs", country: "CZ", alt: "Čeština"},
+  // {label: "Slovenčina", key: "sk", country: "SK", alt: "Slovenčina"},
 ];
 
 export function getThemeData(organization, application) {
@@ -95,11 +95,7 @@ export function getAlgorithmNames(themeData) {
 }
 
 export function getLogo(themes) {
-  if (themes.includes("dark")) {
-    return `${StaticBaseUrl}/img/casdoor-logo_1185x256_dark.png`;
-  } else {
-    return `${StaticBaseUrl}/img/casdoor-logo_1185x256.png`;
-  }
+  return ZgsmLogo;
 }
 
 export const OtherProviderInfo = {
@@ -697,18 +693,27 @@ export const MfaRulePrompted = "Prompted";
 export const MfaRuleOptional = "Optional";
 
 export function isRequiredEnableMfa(user, organization) {
-  if (!user || !organization || !organization.mfaItems) {
+  if (!user || !organization || (!organization.mfaItems && !user.mfaItems)) {
     return false;
   }
   return getMfaItemsByRules(user, organization, [MfaRuleRequired]).length > 0;
 }
 
 export function getMfaItemsByRules(user, organization, mfaRules = []) {
-  if (!user || !organization || !organization.mfaItems) {
+  if (!user || !organization || (!organization.mfaItems && !user.mfaItems)) {
     return [];
   }
 
-  return organization.mfaItems.filter((mfaItem) => mfaRules.includes(mfaItem.rule))
+  let mfaItems = organization.mfaItems;
+  if (user.mfaItems && user.mfaItems.length !== 0) {
+    mfaItems = user.mfaItems;
+  }
+
+  if (mfaItems === null) {
+    return [];
+  }
+
+  return mfaItems.filter((mfaItem) => mfaRules.includes(mfaItem.rule))
     .filter((mfaItem) => user.multiFactorAuths.some((mfa) => mfa.mfaType === mfaItem.name && !mfa.enabled));
 }
 
@@ -953,9 +958,6 @@ export function getProviderLogoURL(provider) {
     return provider.customLogo;
   }
   if (provider.category === "OAuth") {
-    if (provider.type === "GitHub") {
-      return GithubImg;
-    }
     return `${StaticBaseUrl}/img/social_${provider.type.toLowerCase()}.png`;
   } else {
     const info = OtherProviderInfo[provider.category][provider.type];
@@ -1190,22 +1192,13 @@ export function renderLogo(application) {
 
   if (application.homepageUrl !== "") {
     return (
-      <>
-        <a target="_blank" rel="noreferrer" href={application.homepageUrl}>
-          <img className="panel-logo" width={60} src={application.logo} alt={application.displayName} />
-        </a>
-        <div style={{
-          marginBottom: "55px",
-          fontSize: "16px",
-          fontWeight: 600,
-        }}>
-          {i18next.t("login:Log in to Zhuge Shenma")}
-        </div>
-      </>
+      <a target="_blank" rel="noreferrer" href={application.homepageUrl}>
+        <img className="panel-logo" width={100} src={application.logo} alt={application.displayName} />
+      </a>
     );
   } else {
     return (
-      <img className="panel-logo" width={60} src={application.logo} alt={application.displayName} />
+      <img className="panel-logo" width={100} src={application.logo} alt={application.displayName} />
     );
   }
 }
@@ -1339,11 +1332,10 @@ export function renderHelmet(application) {
   }
 
   return (
-    // <Helmet>
-    //   <title>{application.organizationObj.displayName}</title>
-    //   <link rel="icon" href={application.organizationObj.favicon} />
-    // </Helmet>
-    <></>
+    <Helmet>
+      <title>{application.organizationObj.displayName}</title>
+      <link rel="icon" href={application.organizationObj.favicon} />
+    </Helmet>
   );
 }
 
@@ -1521,6 +1513,54 @@ export function getCurrencySymbol(currency) {
     return "$";
   } else if (currency === "CNY" || currency === "cny") {
     return "¥";
+  } else if (currency === "EUR" || currency === "eur") {
+    return "€";
+  } else if (currency === "JPY" || currency === "jpy") {
+    return "¥";
+  } else if (currency === "GBP" || currency === "gbp") {
+    return "£";
+  } else if (currency === "AUD" || currency === "aud") {
+    return "A$";
+  } else if (currency === "CAD" || currency === "cad") {
+    return "C$";
+  } else if (currency === "CHF" || currency === "chf") {
+    return "CHF";
+  } else if (currency === "HKD" || currency === "hkd") {
+    return "HK$";
+  } else if (currency === "SGD" || currency === "sgd") {
+    return "S$";
+  } else if (currency === "BRL" || currency === "brl") {
+    return "R$";
+  } else if (currency === "PLN" || currency === "pln") {
+    return "zł";
+  } else if (currency === "KRW" || currency === "krw") {
+    return "₩";
+  } else if (currency === "INR" || currency === "inr") {
+    return "₹";
+  } else if (currency === "RUB" || currency === "rub") {
+    return "₽";
+  } else if (currency === "MXN" || currency === "mxn") {
+    return "$";
+  } else if (currency === "ZAR" || currency === "zar") {
+    return "R";
+  } else if (currency === "TRY" || currency === "try") {
+    return "₺";
+  } else if (currency === "SEK" || currency === "sek") {
+    return "kr";
+  } else if (currency === "NOK" || currency === "nok") {
+    return "kr";
+  } else if (currency === "DKK" || currency === "dkk") {
+    return "kr";
+  } else if (currency === "THB" || currency === "thb") {
+    return "฿";
+  } else if (currency === "MYR" || currency === "myr") {
+    return "RM";
+  } else if (currency === "TWD" || currency === "twd") {
+    return "NT$";
+  } else if (currency === "CZK" || currency === "czk") {
+    return "Kč";
+  } else if (currency === "HUF" || currency === "huf") {
+    return "Ft";
   } else {
     return currency;
   }
@@ -1546,7 +1586,7 @@ export function getUserCommonFields() {
 }
 
 export function getDefaultFooterContent() {
-  return `Powered by <a target="_blank" href="https://casdoor.org" rel="noreferrer"><img style="padding-bottom: 3px" height="20" alt="Casdoor" src="${StaticBaseUrl}/img/casdoor-logo_1185x256.png"/></a>`;
+  return `Powered by <a target="_blank" href="https://costrict.ai" rel="noreferrer"><img style="padding-bottom: 3px" height="20" alt="costrict" src="${ZgsmLogo}"/></a>`;
 }
 
 export function getEmptyFooterContent() {
@@ -1578,13 +1618,18 @@ export function getDefaultHtmlEmailContent() {
 <div class="email-container">
   <div class="header">
         <h3>Casbin Organization</h3>
-        <img src="${StaticBaseUrl}/img/casdoor-logo_1185x256.png" alt="Casdoor Logo" width="300">
+        <img src="${ZgsmLogo}" alt="Casdoor Logo" width="300">
     </div>
     <p><strong>%{user.friendlyName}</strong>, here is your verification code</p>
     <p>Use this code for your transaction. It's valid for 5 minutes</p>
     <div class="code">
         %s
     </div>
+    <reset-link>
+      <div class="link">
+         Or click this <a href="%link">link</a> to reset
+      </div>
+    </reset-link>
     <p>Thanks</p>
     <p>Casbin Team</p>
     <hr>
@@ -1619,6 +1664,36 @@ export function getCurrencyText(product) {
     return i18next.t("currency:SGD");
   } else if (product?.currency === "BRL") {
     return i18next.t("currency:BRL");
+  } else if (product?.currency === "PLN") {
+    return i18next.t("currency:PLN");
+  } else if (product?.currency === "KRW") {
+    return i18next.t("currency:KRW");
+  } else if (product?.currency === "INR") {
+    return i18next.t("currency:INR");
+  } else if (product?.currency === "RUB") {
+    return i18next.t("currency:RUB");
+  } else if (product?.currency === "MXN") {
+    return i18next.t("currency:MXN");
+  } else if (product?.currency === "ZAR") {
+    return i18next.t("currency:ZAR");
+  } else if (product?.currency === "TRY") {
+    return i18next.t("currency:TRY");
+  } else if (product?.currency === "SEK") {
+    return i18next.t("currency:SEK");
+  } else if (product?.currency === "NOK") {
+    return i18next.t("currency:NOK");
+  } else if (product?.currency === "DKK") {
+    return i18next.t("currency:DKK");
+  } else if (product?.currency === "THB") {
+    return i18next.t("currency:THB");
+  } else if (product?.currency === "MYR") {
+    return i18next.t("currency:MYR");
+  } else if (product?.currency === "TWD") {
+    return i18next.t("currency:TWD");
+  } else if (product?.currency === "CZK") {
+    return i18next.t("currency:CZK");
+  } else if (product?.currency === "HUF") {
+    return i18next.t("currency:HUF");
   } else {
     return "(Unknown currency)";
   }
@@ -1737,4 +1812,25 @@ export function renderLoginPanel(application, getInnerComponent, componentThis) 
       </div>
     </div>
   );
+}
+
+export function createFormAndSubmit(url, params) {
+  const form = document.createElement("form");
+  form.method = "post";
+  form.action = url;
+
+  for (const k in params) {
+    if (!params[k]) {
+      continue;
+    }
+    const input = document.createElement("input");
+    input.type = "hidden";
+    input.name = k;
+    input.value = params[k];
+    form.appendChild(input);
+  }
+
+  document.body.appendChild(form);
+  form.submit();
+  setTimeout(() => {form.remove();}, 500);
 }

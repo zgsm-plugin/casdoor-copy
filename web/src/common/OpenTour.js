@@ -13,10 +13,10 @@
 // limitations under the License.
 
 import React from "react";
-import {Tooltip} from "antd";
-import {QuestionCircleOutlined} from "@ant-design/icons";
+// import {Tooltip} from "antd";
+// import {QuestionCircleOutlined} from "@ant-design/icons";
 import * as TourConfig from "../TourConfig";
-import * as Setting from "../Setting";
+// import * as Setting from "../Setting";
 
 class OpenTour extends React.Component {
   constructor(props) {
@@ -33,16 +33,17 @@ class OpenTour extends React.Component {
 
   render() {
     return (
-      this.canTour() ?
-        <Tooltip title="Click to open tour">
-          <div className="select-box" style={{display: Setting.isMobile() ? "none" : null, ...this.props.style}} onClick={() => TourConfig.setIsTourVisible(true)} >
-            <QuestionCircleOutlined style={{fontSize: "24px"}} />
-          </div>
-        </Tooltip>
-        :
-        <div className="select-box" style={{display: Setting.isMobile() ? "none" : null, cursor: "not-allowed", ...this.props.style}} >
-          <QuestionCircleOutlined style={{fontSize: "24px", color: "#adadad"}} />
-        </div>
+      // this.canTour() ?
+      //   <Tooltip title="Click to open tour">
+      //     <div className="select-box" style={{display: Setting.isMobile() ? "none" : null, ...this.props.style}} onClick={() => TourConfig.setIsTourVisible(true)} >
+      //       <QuestionCircleOutlined style={{fontSize: "24px"}} />
+      //     </div>
+      //   </Tooltip>
+      //   :
+      //   <div className="select-box" style={{display: Setting.isMobile() ? "none" : null, cursor: "not-allowed", ...this.props.style}} >
+      //     <QuestionCircleOutlined style={{fontSize: "24px", color: "#adadad"}} />
+      //   </div>
+      <></>
     );
   }
 }
